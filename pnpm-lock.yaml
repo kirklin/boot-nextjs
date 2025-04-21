@@ -35,6 +35,9 @@ importers:
       unocss-preset-ease:
         specifier: ^0.0.4
         version: 0.0.4(unocss@0.58.5(@unocss/webpack@66.1.0-beta.12(webpack@5.90.1))(postcss@8.5.3)(rollup@4.9.6)(vite@5.1.0(@types/node@22.14.1)(terser@5.27.0)))
+      zod:
+        specifier: ^3.24.3
+        version: 3.24.3
     devDependencies:
       '@eslint-react/eslint-plugin':
         specifier: ^1.48.4
@@ -3192,6 +3195,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@3.24.3:
+    resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -6685,5 +6691,7 @@ snapshots:
   yaml@2.7.1: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.24.3: {}
 
   zwitch@2.0.4: {}

@@ -12,18 +12,22 @@ describe("getClientConfig", () => {
   it("should correctly reflect boolean values for analytics flags", () => {
     process.env.NEXT_PUBLIC_ANALYTICS_VERCEL = "1";
     process.env.NEXT_PUBLIC_VERCEL_DEBUG = "1";
+    process.env.NEXT_PUBLIC_DEVELOPER_DEBUG = "1";
 
     const config = getClientConfig();
     expect(config.ANALYTICS_VERCEL).toBe(true);
     expect(config.VERCEL_DEBUG).toBe(true);
+    expect(config.DEBUG_MODE).toBe(true);
   });
 
   it("should correctly handle falsy values for analytics flags", () => {
     process.env.NEXT_PUBLIC_ANALYTICS_VERCEL = "0";
     process.env.NEXT_PUBLIC_VERCEL_DEBUG = "0";
+    process.env.NEXT_PUBLIC_DEVELOPER_DEBUG = "0";
 
     const config = getClientConfig();
     expect(config.ANALYTICS_VERCEL).toBe(false);
     expect(config.VERCEL_DEBUG).toBe(false);
+    expect(config.DEBUG_MODE).toBe(false);
   });
 });
