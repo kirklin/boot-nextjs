@@ -67,18 +67,22 @@
   - Use Zustand with the createSelectors pattern for global state management
   - Use Tailwind CSS 4 for styling components
   - Use UI components from ~/components/ui (Button, Input, Text, etc.)
+  - Use next-intl for internationalization
   - SEO optimization:
     * Use appropriate meta tags (title, description)
     * Implement structured data (JSON-LD)
     * Use semantic HTML elements
-    * Ensure proper heading hierarchy (h1, h2, etc.)
+    * Ensure proper heading hierarchy (h1, h2, h3, etc.)
     * Use Next.js metadata API to configure page metadata
     * Add alt text to all images
   - Follow the project directory structure:
     * src/app/ - Next.js App Router pages and navigation
+    * src/app/[locale]/ - Internationalized routes using next-intl
     * src/components/ - Shared components
-    * src/utils/ - Shared utilities
+    * src/lib/ - Utility libraries and functions
     * src/config/ - Configuration files
+    * src/locales/ - Internationalization JSON files
+    * src/styles/ - Global stylesheets
     * public/ - Static assets
   - For new packages, use 'pnpm install <package-name>'
   - Write unit tests for utilities and complex components (.test.tsx)
