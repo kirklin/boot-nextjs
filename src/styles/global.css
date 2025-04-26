@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-.common-bg {
-  @apply bg-gray-100 dark:bg-gray-900;
-}
 .pr {
   @apply relative;
 }

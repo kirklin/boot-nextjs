@@ -1,0 +1,12 @@
+{
+  "HomePage": {
+    "title": "Boot Next.js",
+    "description": "现代化的Next.js启动模板，支持国际化、Tailwind CSS和TypeScript。",
+    "getStarted": "开始使用"
+  },
+  "LocaleSwitcher": {
+    "label": "切换语言",
+    "en": "英语",
+    "zh": "中文"
+  }
+}

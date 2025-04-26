@@ -1,0 +1,12 @@
+{
+  "HomePage": {
+    "title": "Boot Next.js",
+    "description": "Modern Next.js starter template with i18n support, Tailwind CSS, and TypeScript.",
+    "getStarted": "Get Started"
+  },
+  "LocaleSwitcher": {
+    "label": "Change language",
+    "en": "English",
+    "zh": "Chinese"
+  }
+}
