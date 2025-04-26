@@ -1,0 +1,18 @@
+# TODO: Replace all bracketed placeholders below with your actual project information.
+
+# [Your Boot-Next.js Project Name]
+
+> [Describe your Boot-Next.js project's core value and purpose in 1-2 sentences]
+
+## Core Content
+- [[Category 1 Name]](/[category-1-path]): [Brief description of Category 1]
+- [[Category 2 Name]](/[category-2-path]): [Brief description of Category 2]
+- [[Blog/Articles Section Name]](/[blog-path]): [Description of blog/article content type]
+
+## Key Resources
+- [[Important Page 1 Name]](/[page-1-path]): [Description of Page 1's purpose]
+- [[Important Page 2 Name]](/[page-2-path]): [Description of Page 2's purpose]
+
+## Recent Updates
+- [[Latest Content 1 Title]](/[latest-1-path]): Updated [Date]
+- [[Latest Content 2 Title]](/[latest-2-path]): Updated [Date]

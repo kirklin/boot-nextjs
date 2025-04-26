@@ -1,0 +1,25 @@
+# TODO: Replace all bracketed placeholders below with your actual project information.
+
+# [Full Introduction to Your Boot-Next.js Project Name]
+
+> [Provide a detailed introduction (100-150 words) covering the core value, target audience, and key features of your Boot-Next.js project.]
+
+## Project Background
+[Add details about the project's background, vision, and mission (200-300 words). Why was it created? What problems does it solve?]
+
+## Content Category Details
+### [[Category 1 Name]](/[category-1-path])
+[Describe the content, features, and value of this category in detail (150-200 words).]
+
+### [[Category 2 Name]](/[category-2-path])
+[Describe the content, features, and value of this category in detail (150-200 words).]
+
+## User Value
+[Describe the specific value users gain from the project and the problems it solves for them (200-300 words).]
+
+## Recent Updates Details
+### [[Latest Content 1 Title]](/[latest-1-path])
+[Provide a summary and highlight the key value points of this content (100-150 words).]
+
+### [[Latest Content 2 Title]](/[latest-2-path])
+[Provide a summary and highlight the key value points of this content (100-150 words).]
