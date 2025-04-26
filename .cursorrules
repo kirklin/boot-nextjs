@@ -65,7 +65,7 @@
   - Use TypeScript for all code
   - Avoid enums; use const objects with 'as const' assertion
   - Use Zustand with the createSelectors pattern for global state management
-  - Use UnoCSS (Tailwind CSS)  for styling components
+  - Use Tailwind CSS 4 for styling components
   - Use UI components from ~/components/ui (Button, Input, Text, etc.)
   - SEO optimization:
     * Use appropriate meta tags (title, description)
