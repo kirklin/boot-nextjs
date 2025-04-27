@@ -5,8 +5,9 @@ import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import React from "react";
 import Analytics from "~/components/Analytics";
-import { cn } from "~/lib/cn";
+import { ThemeProvider } from "~/components/theme-provider";
 import { routing } from "~/lib/i18n/navigation";
+import { cn } from "~/lib/utils";
 import "~/styles/global.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,11 +38,19 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body suppressHydrationWarning className={cn(inter.className, "antialiased")}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+    // suppressHydrationWarning用于防止主题切换时服务端和客户端渲染不匹配导致的水合错误
+    <html lang={locale} suppressHydrationWarning>
+      <body className={cn(inter.className, "antialiased")}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>
