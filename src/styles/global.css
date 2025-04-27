@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "@iconify/tailwind4" {
- prefix: "i";
+  prefix: "i";
 }
 
 .pr {

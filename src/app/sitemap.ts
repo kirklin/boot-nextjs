@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
+import { getBaseUrl } from "~/lib/url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // TODO: Replace with your actual website's base URL
-  const baseUrl = "https://github.com/kirklin/boot-nextjs";
+  // Use the utility function to get the dynamic base URL
+  const baseUrl = getBaseUrl();
 
   // TODO: Replace these placeholder entries with your actual site structure
   return [

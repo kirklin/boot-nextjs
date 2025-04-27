@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
+import { getBaseUrl } from "~/lib/url";
 
 export default function robots(): MetadataRoute.Robots {
-  // TODO: Replace with your actual website's base URL
-  const baseUrl = "https://github.com/kirklin/boot-nextjs";
+  // Use the utility function to get the dynamic base URL
+  const baseUrl = getBaseUrl();
 
   return {
     rules: [
@@ -42,7 +43,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    // TODO: Ensure the sitemap URL matches your actual sitemap location
+    // Use the dynamic base URL for the sitemap location
     sitemap: `${baseUrl}/sitemap.xml`,
     // Note: Non-standard directives like LLM-Content cannot be added via MetadataRoute.
     // Ensure llms.txt and llms-full.txt exist in the /public directory.
