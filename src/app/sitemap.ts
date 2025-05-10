@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // TODO: Replace these placeholder entries with your actual site structure
   return [
     {
-      url: baseUrl, // Homepage
+      url: baseUrl.toString(), // Homepage
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
