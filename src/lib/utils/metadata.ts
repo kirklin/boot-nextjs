@@ -5,8 +5,9 @@ interface AlternatesConfig {
   languages: Record<string, string>;
 }
 
-export function createAlternates(basePath: string): AlternatesConfig {
+export function createAlternates(basePath: string, locale?: string): AlternatesConfig {
   const languages: Record<string, string> = {};
+  const currentLocale = locale || defaultLocale;
 
   // Generate language-specific URLs
   routing.locales.forEach((locale: string) => {
@@ -36,8 +37,18 @@ export function createAlternates(basePath: string): AlternatesConfig {
     }
   }
 
+  // Set canonical URL based on current locale
+  let canonicalUrl;
+  if (currentLocale === defaultLocale && localePrefix === "as-needed") {
+    // 对于默认语言和as-needed配置，不包含区域前缀
+    canonicalUrl = basePath;
+  } else {
+    // 对于非默认语言或localePrefix="always"，包含区域前缀
+    canonicalUrl = basePath === "/" ? `/${currentLocale}` : `/${currentLocale}${basePath}`;
+  }
+
   return {
-    canonical: basePath,
+    canonical: canonicalUrl,
     languages,
   };
 }
