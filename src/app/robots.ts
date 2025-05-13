@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { locales } from "~/lib/i18n/navigation";
 import { getBaseUrl } from "~/lib/url";
 
+export const dynamic = "force-static";
+
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = getBaseUrl(); // Define base URL
 

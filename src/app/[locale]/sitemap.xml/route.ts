@@ -1,6 +1,12 @@
 import type { NextRequest } from "next/server";
-import { defaultLocale } from "~/lib/i18n/navigation";
+import { defaultLocale, locales } from "~/lib/i18n/navigation";
 import { getBaseUrl } from "~/lib/url";
+
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  return locales.map(locale => ({ locale }));
+}
 
 export async function GET(
   request: NextRequest,

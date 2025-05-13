@@ -2,6 +2,7 @@ import withNextIntl from "next-intl/plugin";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export", // Add this line for static export
   // Your existing Next.js configuration options go here
 };
 
