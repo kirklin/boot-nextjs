@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { BackgroundBeams } from "~/components/background-beams";
+import { LanguageSwitcher } from "~/components/language-switcher";
+import { ModeToggle } from "~/components/theme-toggle";
 
 export default async function AuthLayout({
   children,
@@ -8,6 +10,13 @@ export default async function AuthLayout({
 }) {
   return (
     <main className="relative flex h-screen w-full flex-col overflow-hidden">
+      <div className="absolute right-5 top-5 z-50">
+        <div className="flex items-center backdrop-blur-sm rounded-full border shadow px-1 py-1 bg-background/50 hover:bg-background/70 transition-colors">
+          <LanguageSwitcher />
+          <div className="w-px h-5 bg-border mx-0.5"></div>
+          <ModeToggle />
+        </div>
+      </div>
       <div className="flex-1">
         <div className="flex min-h-screen w-full">
           <div className="relative hidden flex-col border-r bg-muted p-10 lg:flex lg:w-1/2">
