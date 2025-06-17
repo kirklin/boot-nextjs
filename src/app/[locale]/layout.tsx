@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import Analytics from "~/components/Analytics";
 import { ThemeProvider } from "~/components/theme-provider";
+import { Toaster } from "~/components/ui/sonner";
 import { routing } from "~/lib/i18n/navigation";
 import { getBaseUrl } from "~/lib/url";
 import { cn, createAlternates } from "~/lib/utils";
@@ -66,6 +67,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
         </ThemeProvider>
         <Analytics />
+        <Toaster />
       </body>
     </html>
   );
