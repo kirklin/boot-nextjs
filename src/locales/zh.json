@@ -2,11 +2,38 @@
   "HomePage": {
     "title": "Boot Next.js",
     "description": "现代化的Next.js启动模板，支持国际化、Tailwind CSS和TypeScript。",
-    "getStarted": "开始使用"
+    "getStarted": "开始使用",
+    "createAccount": "创建账号"
   },
   "LocaleSwitcher": {
     "label": "切换语言",
     "en": "英语",
     "zh": "中文"
+  },
+  "Header": {
+    "home": "首页",
+    "signIn": "登录",
+    "signUp": "注册",
+    "profile": "个人中心"
+  },
+  "Footer": {
+    "description": "现代化的Next.js启动模板，支持国际化、Tailwind CSS和TypeScript。",
+    "allRightsReserved": "版权所有。",
+    "sections": {
+      "resources": {
+        "title": "资源",
+        "documentation": "文档"
+      },
+      "legal": {
+        "title": "法律",
+        "about": "关于我们",
+        "terms": "使用条款",
+        "privacy": "隐私政策"
+      },
+      "social": {
+        "title": "社交",
+        "github": "GitHub"
+      }
+    }
   }
 }

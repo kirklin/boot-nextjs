@@ -2,11 +2,38 @@
   "HomePage": {
     "title": "Boot Next.js",
     "description": "Modern Next.js starter template with i18n support, Tailwind CSS, and TypeScript.",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "createAccount": "Create Account"
   },
   "LocaleSwitcher": {
     "label": "Change language",
     "en": "English",
     "zh": "Chinese"
+  },
+  "Header": {
+    "home": "Home",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "profile": "Profile"
+  },
+  "Footer": {
+    "description": "Modern Next.js starter template with i18n support, Tailwind CSS, and TypeScript.",
+    "allRightsReserved": "All rights reserved.",
+    "sections": {
+      "resources": {
+        "title": "Resources",
+        "documentation": "Documentation"
+      },
+      "legal": {
+        "title": "Legal",
+        "about": "About Us",
+        "terms": "Terms of Use",
+        "privacy": "Privacy Policy"
+      },
+      "social": {
+        "title": "Social",
+        "github": "GitHub"
+      }
+    }
   }
 }
