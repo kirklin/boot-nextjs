@@ -18,6 +18,7 @@ import { use } from "react";
 
 import { Footer } from "~/components/layout/footer";
 import { Header } from "~/components/layout/header";
+import { Pricing } from "~/components/pricing";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
@@ -53,54 +54,6 @@ const features = [
     icon: <MessageSquare className="h-6 w-6" />,
     title: "AI Integration",
     description: "Easy integration with OpenAI and other AI services for your SaaS product",
-  },
-];
-
-// Pricing plans data
-const pricingPlans = [
-  {
-    name: "Community",
-    price: "Free",
-    description: "For open source and community projects",
-    features: [
-      "All core features",
-      "TypeScript support",
-      "Community support",
-      "GitHub discussions",
-    ],
-    buttonText: "Get Started",
-    buttonVariant: "outline" as const,
-    popular: false,
-  },
-  {
-    name: "Sponsor",
-    price: "$19",
-    description: "Support our open source work with a donation",
-    features: [
-      "All Community features",
-      "Priority issue resolution",
-      "GitHub sponsor badge",
-      "Name in contributors list",
-      "Good karma ✨",
-    ],
-    buttonText: "Donate",
-    buttonVariant: "default" as const,
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    description: "For organizations that need additional support",
-    features: [
-      "All Sponsor features",
-      "Custom feature development",
-      "Email support",
-      "Consulting hours",
-      "Custom branding options",
-    ],
-    buttonText: "Contact Us",
-    buttonVariant: "outline" as const,
-    popular: false,
   },
 ];
 
@@ -312,64 +265,7 @@ export default function HomePage({
       </section>
 
       {/* Pricing Section */}
-      <section className="w-full py-16 bg-muted/30">
-        <div className="container px-4 mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Support Our Open Source Work</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Boot Next.js is completely free and open source. Your donations help us maintain and improve the project.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {pricingPlans.map((plan, index) => (
-              <Card
-                key={index}
-                className={`border relative ${plan.popular ? "border-primary shadow-md" : ""}`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-3 left-0 right-0 flex justify-center">
-                    <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
-                      Recommended
-                    </span>
-                  </div>
-                )}
-
-                <CardHeader>
-                  <CardTitle>{plan.name}</CardTitle>
-                  <div className="mt-4">
-                    <span className="text-3xl font-bold">{plan.price}</span>
-                    {plan.price !== "Custom" && plan.price !== "Free" && <span className="text-muted-foreground ml-1">/month</span>}
-                  </div>
-                  <CardDescription className="mt-2">{plan.description}</CardDescription>
-                </CardHeader>
-
-                <CardContent className="space-y-6">
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    asChild
-                    variant={plan.buttonVariant}
-                    className="w-full"
-                    size="lg"
-                  >
-                    <Link href="https://github.com/sponsors/kirklin" target="_blank">
-                      {plan.buttonText}
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Pricing />
 
       {/* FAQ Section */}
       <section className="w-full py-16">
