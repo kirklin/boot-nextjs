@@ -103,7 +103,8 @@ export default function SecuritySettings() {
                 <FormControl>
                   <Input type="password" className="h-10" {...field} />
                 </FormControl>
-                <div className="min-h-5"> {/* 占位，确保高度一致 */}
+                <div className="min-h-5">
+                  {/* 占位，确保高度一致 */}
                   <FormMessage />
                 </div>
               </FormItem>
