@@ -6,7 +6,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "~/components/language-switcher";
 import { ModeToggle } from "~/components/theme-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { authClient } from "~/lib/auth/client";
 import { cn } from "~/lib/utils";
 
 interface HeaderProps {
@@ -16,6 +26,7 @@ interface HeaderProps {
 export function Header({ className }: HeaderProps) {
   const t = useTranslations("Header");
   const pathname = usePathname();
+  const { data: session, isPending } = authClient.useSession();
 
   const navItems = [
     { href: "/", label: t("home") },
@@ -84,17 +95,58 @@ export function Header({ className }: HeaderProps) {
             {/* Separator */}
             <div className="hidden md:block w-px h-4 bg-border/60 mx-2" />
 
-            {/* Login button */}
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="relative overflow-hidden border-border/60 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200"
-            >
-              <Link href="/sign-in" className="relative z-10">
-                {t("signIn")}
-              </Link>
-            </Button>
+            {/* Show user profile or login button based on auth state */}
+            {isPending
+              ? (
+                // Show loading state while checking auth
+                  <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
+                )
+              : session?.user
+                ? (
+                  // User is logged in - show profile dropdown
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="rounded-full">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={session.user.image || undefined} alt={session.user.name || "User"} />
+                            <AvatarFallback>{session.user.name?.charAt(0) || "U"}</AvatarFallback>
+                          </Avatar>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium leading-none">{session.user.name}</p>
+                            <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link href="/profile">{t("profile")}</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={async () => {
+                            await authClient.signOut();
+                          }}
+                        >
+                          {t("signOut")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )
+                : (
+                  // User is not logged in - show login button
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="relative overflow-hidden border-border/60 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200"
+                    >
+                      <Link href="/sign-in" className="relative z-10">
+                        {t("signIn")}
+                      </Link>
+                    </Button>
+                  )}
 
             {/* Mobile menu items for smaller screens */}
             <div className="flex items-center space-x-1 sm:hidden">
