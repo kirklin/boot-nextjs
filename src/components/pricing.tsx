@@ -88,68 +88,57 @@ export function Pricing() {
   };
 
   return (
-    <section className="w-full py-16 bg-muted/30">
-      <div className="container px-4 mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Support Our Open Source Work</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Boot Next.js is completely free and open source. Your donations help us maintain and improve the project.
-          </p>
-        </div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      {pricingPlans.map((plan, index) => (
+        <Card
+          key={index}
+          className={`border relative ${plan.popular ? "border-primary shadow-md" : ""}`}
+        >
+          {plan.popular && (
+            <div className="absolute -top-3 left-0 right-0 flex justify-center">
+              <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
+                Recommended
+              </span>
+            </div>
+          )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {pricingPlans.map((plan, index) => (
-            <Card
-              key={index}
-              className={`border relative ${plan.popular ? "border-primary shadow-md" : ""}`}
+          <CardHeader>
+            <CardTitle>{plan.name}</CardTitle>
+            <div className="mt-4">
+              <span className="text-3xl font-bold">{plan.price}</span>
+              {plan.price !== "Custom" && plan.price !== "Free" && <span className="text-muted-foreground ml-1">/month</span>}
+            </div>
+            <CardDescription className="mt-2">{plan.description}</CardDescription>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            <ul className="space-y-2">
+              {plan.features.map((feature, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <Button
+              variant={plan.buttonVariant}
+              className="w-full"
+              size="lg"
+              onClick={() => {
+                if (plan.name === "Sponsor") {
+                  // This is a placeholder price ID.
+                  // In a real application, you would fetch this from your database.
+                  handleCheckout("price_1RbNfvPthsRl3XNkduOFHQ7N");
+                }
+              }}
+              disabled={(loading && plan.name === "Sponsor") || !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
             >
-              {plan.popular && (
-                <div className="absolute -top-3 left-0 right-0 flex justify-center">
-                  <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
-                    Recommended
-                  </span>
-                </div>
-              )}
-
-              <CardHeader>
-                <CardTitle>{plan.name}</CardTitle>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold">{plan.price}</span>
-                  {plan.price !== "Custom" && plan.price !== "Free" && <span className="text-muted-foreground ml-1">/month</span>}
-                </div>
-                <CardDescription className="mt-2">{plan.description}</CardDescription>
-              </CardHeader>
-
-              <CardContent className="space-y-6">
-                <ul className="space-y-2">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  variant={plan.buttonVariant}
-                  className="w-full"
-                  size="lg"
-                  onClick={() => {
-                    if (plan.name === "Sponsor") {
-                      // This is a placeholder price ID.
-                      // In a real application, you would fetch this from your database.
-                      handleCheckout("price_1RbNfvPthsRl3XNkduOFHQ7N");
-                    }
-                  }}
-                  disabled={(loading && plan.name === "Sponsor") || !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
-                >
-                  {loading && plan.name === "Sponsor" ? "Redirecting..." : plan.buttonText}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
+              {loading && plan.name === "Sponsor" ? "Redirecting..." : plan.buttonText}
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }

@@ -12,6 +12,7 @@
   },
   "Header": {
     "home": "Home",
+    "pricing": "Pricing",
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "profile": "Profile"

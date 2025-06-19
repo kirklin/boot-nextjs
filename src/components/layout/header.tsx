@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "~/components/language-switcher";
 import { ModeToggle } from "~/components/theme-toggle";
 import { Button } from "~/components/ui/button";
@@ -14,6 +15,12 @@ interface HeaderProps {
 
 export function Header({ className }: HeaderProps) {
   const t = useTranslations("Header");
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: "/", label: t("home") },
+    { href: "/pricing", label: t("pricing") },
+  ];
 
   return (
     <header className={cn(
@@ -45,6 +52,22 @@ export function Header({ className }: HeaderProps) {
               </span>
             </Link>
           </div>
+
+          {/* Navigation Links - Desktop */}
+          <nav className="hidden md:flex items-center space-x-6">
+            {navItems.map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  pathname === item.href || (item.href === "/" && pathname === "/") ? "text-primary" : "text-muted-foreground",
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
           {/* Right side items */}
           <div className="flex items-center space-x-1">

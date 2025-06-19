@@ -12,6 +12,7 @@
   },
   "Header": {
     "home": "首页",
+    "pricing": "价格",
     "signIn": "登录",
     "signUp": "注册",
     "profile": "个人中心"

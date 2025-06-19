@@ -265,7 +265,17 @@ export default function HomePage({
       </section>
 
       {/* Pricing Section */}
-      <Pricing />
+      <section className="w-full py-16 bg-muted/30">
+        <div className="container px-4 mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Support Our Open Source Work</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Boot Next.js is completely free and open source. Your donations help us maintain and improve the project.
+            </p>
+          </div>
+          <Pricing />
+        </div>
+      </section>
 
       {/* FAQ Section */}
       <section className="w-full py-16">
