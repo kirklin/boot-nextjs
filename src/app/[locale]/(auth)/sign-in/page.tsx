@@ -31,7 +31,7 @@ export default function SignInPage() {
     const { error } = await authClient.signIn.email({
       email,
       password,
-      callbackURL: "/",
+      callbackURL: "/dashboard",
     });
     if (error) {
       toast.error(error.message || error.statusText);

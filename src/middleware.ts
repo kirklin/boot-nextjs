@@ -15,7 +15,7 @@ export default async function middleware(request: NextRequest) {
   const isAuthPage = authPages.some(page => pathname.endsWith(page));
 
   if (sessionCookie && isAuthPage) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return intlMiddleware(request);
