@@ -8,6 +8,13 @@
       "when": 1750147766636,
       "tag": "0000_fuzzy_pretty_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1750439970956,
+      "tag": "0001_sudden_jackal",
+      "breakpoints": true
     }
   ]
 }

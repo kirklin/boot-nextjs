@@ -5,49 +5,49 @@ import { useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { getStripe } from "~/lib/stripe/client";
+import { authClient } from "~/lib/auth/client";
 
 // Pricing plans data
 const pricingPlans = [
   {
-    name: "Community",
-    price: "Free",
-    description: "For open source and community projects",
+    name: "Supporter",
+    price: "$9",
+    priceId: "price_1Rc9G1PthsRl3XNksFERHQkW", // 请替换为真实的 Price ID
+    description: "For individual developers and hobbyists.",
     features: [
-      "All core features",
-      "TypeScript support",
+      "Access to all core features",
       "Community support",
-      "GitHub discussions",
+      "Special badge in the community",
+      "Name on the supporters list",
     ],
     buttonText: "Get Started",
     buttonVariant: "outline" as const,
     popular: false,
   },
   {
-    name: "Sponsor",
-    price: "$19",
-    description: "Support our open source work with a donation",
+    name: "Professional",
+    price: "$29",
+    priceId: "price_1Rc9G1PthsRl3XNkjdbbCOle", // 请替换为真实的 Price ID
+    description: "For professional developers and small teams.",
     features: [
-      "All Community features",
-      "Priority issue resolution",
-      "GitHub sponsor badge",
-      "Name in contributors list",
-      "Good karma ✨",
+      "All Supporter features",
+      "Priority support",
+      "Early access to new features",
     ],
-    buttonText: "Donate",
+    buttonText: "Get Started",
     buttonVariant: "default" as const,
     popular: true,
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    description: "For organizations that need additional support",
+    name: "Partner",
+    price: "$99",
+    priceId: "price_1Rc9G1PthsRl3XNkMxgFOUmF", // 请替换为真实的 Price ID
+    description: "For businesses and enterprises.",
     features: [
-      "All Sponsor features",
-      "Custom feature development",
-      "Email support",
-      "Consulting hours",
-      "Custom branding options",
+      "All Professional features",
+      "Direct communication channel",
+      "Logo on our homepage",
+      "Custom feature prioritization",
     ],
     buttonText: "Contact Us",
     buttonVariant: "outline" as const,
@@ -58,33 +58,30 @@ const pricingPlans = [
 export function Pricing() {
   const [loading, setLoading] = useState(false);
 
-  const handleCheckout = async (priceId: string) => {
-    if (priceId === "price_1PQiSgRrxNozT13s9qAAR1fB") {
+  const handleCheckout = async (plan: typeof pricingPlans[number]) => {
+    if (plan.priceId.includes("placeholder")) {
       console.error("Please replace the placeholder price ID in src/components/pricing.tsx with your actual Stripe price ID.");
       return;
     }
+
+    if (plan.name === "Partner") {
+      // Handle contact for custom plan
+      window.location.href = "mailto:contact@example.com";
+      return;
+    }
+
     setLoading(true);
-    const stripe = await getStripe();
-    if (!stripe) {
-      console.error("Stripe.js has not loaded yet.");
+    try {
+      await authClient.subscription.upgrade({
+        plan: plan.name.toLowerCase(),
+        successUrl: `${window.location.origin}/payment-result?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: window.location.origin,
+      });
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    } finally {
       setLoading(false);
-      return;
     }
-    const res = await fetch("/api/stripe", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ priceId }),
-    });
-    const { sessionId, error } = await res.json();
-    if (error) {
-      console.error("Error from API:", JSON.stringify(error, null, 2));
-      setLoading(false);
-      return;
-    }
-    await stripe.redirectToCheckout({ sessionId });
-    setLoading(false);
   };
 
   return (
@@ -106,7 +103,7 @@ export function Pricing() {
             <CardTitle>{plan.name}</CardTitle>
             <div className="mt-4">
               <span className="text-3xl font-bold">{plan.price}</span>
-              {plan.price !== "Custom" && plan.price !== "Free" && <span className="text-muted-foreground ml-1">/month</span>}
+              {plan.price !== "Custom" && <span className="text-muted-foreground ml-1">/month</span>}
             </div>
             <CardDescription className="mt-2">{plan.description}</CardDescription>
           </CardHeader>
@@ -125,16 +122,10 @@ export function Pricing() {
               variant={plan.buttonVariant}
               className="w-full"
               size="lg"
-              onClick={() => {
-                if (plan.name === "Sponsor") {
-                  // This is a placeholder price ID.
-                  // In a real application, you would fetch this from your database.
-                  handleCheckout("price_1RbNfvPthsRl3XNkduOFHQ7N");
-                }
-              }}
-              disabled={(loading && plan.name === "Sponsor") || !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+              onClick={() => handleCheckout(plan)}
+              disabled={loading || !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
             >
-              {loading && plan.name === "Sponsor" ? "Redirecting..." : plan.buttonText}
+              {loading ? "Redirecting..." : plan.buttonText}
             </Button>
           </CardContent>
         </Card>
