@@ -2,6 +2,7 @@ import Image from "next/image";
 import { BackgroundBeams } from "~/components/background-beams";
 import { LanguageSwitcher } from "~/components/language-switcher";
 import { ModeToggle } from "~/components/theme-toggle";
+import { Link } from "~/lib/i18n/navigation";
 
 export default async function AuthLayout({
   children,
@@ -24,7 +25,7 @@ export default async function AuthLayout({
               <BackgroundBeams />
             </div>
             <div className="z-10">
-              <div className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <Image
                   src="/favicon.ico"
                   alt="Logo"
@@ -35,7 +36,7 @@ export default async function AuthLayout({
                 <h1 className="text-2xl font-bold animate-in-out-in duration-1000">
                   Boot Next.js
                 </h1>
-              </div>
+              </Link>
               <p className="mt-2 text-muted-foreground max-w-md">
                 Modern, high-performance web application template
               </p>
