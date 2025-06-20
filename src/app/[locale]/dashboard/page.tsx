@@ -1,65 +1,74 @@
 "use client";
 
+import type { Subscription } from "@better-auth/stripe";
 import { CheckCircle2, Circle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardShell } from "~/components/dashboard/dashboard-shell";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { authClient } from "~/lib/auth/client";
+import { getStripe } from "~/lib/stripe/client";
+import { subscriptionPlans } from "~/lib/stripe/plans";
 
 export default function DashboardPage() {
-  // Mock data - in a real app, this would come from Better Auth API
-  const [currentPlan] = useState("free");
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [isCheckoutLoading, setCheckoutLoading] = useState(false);
 
-  const plans = [
-    {
-      id: "free",
-      name: "Free",
-      price: "$0",
-      description: "For personal projects or learning",
-      features: [
-        "1,000 API credits per month",
-        "Basic features access",
-        "Email support (24-48h response)",
-      ],
-      active: true,
-    },
-    {
-      id: "pro",
-      name: "Pro",
-      price: "$19",
-      period: "/month",
-      description: "For professionals and small teams",
-      features: [
-        "10,000 API credits per month",
-        "Advanced features",
-        "Priority support (24h response)",
-        "Team collaboration",
-      ],
-      active: false,
-    },
-    {
-      id: "ultra",
-      name: "Ultra",
-      price: "$49",
-      period: "/month",
-      description: "For growing businesses",
-      features: [
-        "Unlimited API credits",
-        "All features included",
-        "Premium support (12h response)",
-        "Advanced analytics",
-        "Custom integration",
-      ],
-      active: false,
-    },
-  ];
+  useEffect(() => {
+    async function fetchSubscription() {
+      try {
+        const { data } = await authClient.subscription.list();
+        if (data && data.length > 0) {
+          const activeSubscription = data.find(sub => sub.status === "active" || sub.status === "trialing");
+          setSubscription(activeSubscription || null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch subscription:", error);
+      }
+    }
+    fetchSubscription();
+  }, []);
+
+  const handleUpgrade = async (plan: (typeof subscriptionPlans)[number]) => {
+    setCheckoutLoading(true);
+    try {
+      const response = await fetch("/api/stripe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ priceId: plan.priceId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create checkout session.");
+      }
+
+      const { sessionId } = await response.json();
+      const stripe = await getStripe();
+
+      if (stripe) {
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+        if (error) {
+          console.error("Stripe redirect error:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  const currentPlanName = subscription?.plan || "Free";
+  const currentPlanDetails = subscriptionPlans.find(p => p.name.toLowerCase() === currentPlanName.toLowerCase());
 
   const usageStats = {
-    used: 764,
-    total: 1000,
-    percentage: 76.4,
+    used: 764, // This should be fetched from a relevant API
+    total: currentPlanDetails?.limits.projects === -1 ? Infinity : (currentPlanDetails?.limits.projects || 1) * 1000,
+    percentage: currentPlanDetails?.limits.projects === -1 ? 0 : (764 / ((currentPlanDetails?.limits.projects || 1) * 1000)) * 100,
   };
 
   return (
@@ -71,23 +80,26 @@ export default function DashboardPage() {
 
         {/* Subscription Plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {plans.map(plan => (
+          {subscriptionPlans.map(plan => (
             <Card
-              key={plan.id}
-              className={`flex flex-col ${plan.id === currentPlan ? "border-primary" : ""}`}
+              key={plan.name}
+              className={`flex flex-col ${plan.name.toLowerCase() === currentPlanName.toLowerCase() ? "border-primary" : ""}`}
             >
               <CardHeader>
                 <div className="flex justify-between items-center mb-2">
                   <CardTitle className="text-lg">{plan.name}</CardTitle>
-                  {plan.id === currentPlan && (
+                  {plan.name.toLowerCase() === currentPlanName.toLowerCase() && (
                     <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
                       Active
                     </span>
                   )}
                 </div>
                 <div className="flex items-baseline">
-                  <span className="text-2xl font-bold">{plan.price}</span>
-                  {plan.period && <span className="text-muted-foreground ml-1">{plan.period}</span>}
+                  <span className="text-2xl font-bold">
+                    $
+                    {plan.price / 100}
+                  </span>
+                  <span className="text-muted-foreground ml-1">/month</span>
                 </div>
                 <CardDescription>{plan.description}</CardDescription>
               </CardHeader>
@@ -95,7 +107,7 @@ export default function DashboardPage() {
                 <ul className="space-y-2">
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-start">
-                      {plan.id === currentPlan
+                      {plan.name.toLowerCase() === currentPlanName.toLowerCase()
                         ? (
                             <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mr-2 mt-0.5" />
                           )
@@ -108,17 +120,15 @@ export default function DashboardPage() {
                 </ul>
               </CardContent>
               <CardFooter>
-                {plan.id === currentPlan
+                {plan.name.toLowerCase() === currentPlanName.toLowerCase()
                   ? (
                       <Button variant="outline" className="w-full" disabled>
                         Current Plan
                       </Button>
                     )
                   : (
-                      <Button variant="default" className="w-full">
-                        Upgrade to
-                        {" "}
-                        {plan.name}
+                      <Button variant="default" className="w-full" onClick={() => handleUpgrade(plan)} disabled={isCheckoutLoading}>
+                        {isCheckoutLoading ? "Redirecting..." : `Upgrade to ${plan.name}`}
                       </Button>
                     )}
               </CardFooter>

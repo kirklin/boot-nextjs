@@ -1,12 +1,13 @@
-import type { BetterAuthPlugin } from "better-auth";
+import type { BetterAuthOptions, BetterAuthPlugin } from "better-auth";
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { jwt } from "better-auth/plugins";
+import { customSession, jwt } from "better-auth/plugins";
 import { env } from "~/config/server";
 import { db } from "~/lib/db";
 import { account, jwks, session, subscription, user, verification } from "~/lib/db/schema";
+import { subscriptionPlans } from "~/lib/stripe/plans";
 import { stripe as stripeClient } from "~/lib/stripe/server";
 
 // 配置社交登录提供商
@@ -28,45 +29,23 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
   };
 }
 
-const plugins: BetterAuthPlugin[] = [nextCookies(), jwt()];
+const basePlugins: BetterAuthPlugin[] = [nextCookies(), jwt()];
 
 if (stripeClient && env.STRIPE_WEBHOOK_SECRET) {
-  plugins.push(
+  basePlugins.push(
     stripe({
       stripeClient,
       stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
       createCustomerOnSignUp: true,
       subscription: {
         enabled: true,
-        plans: [
-          {
-            name: "Supporter",
-            priceId: "price_1Rc9G1PthsRl3XNksFERHQkW",
-            limits: {
-              projects: 1,
-            },
-          },
-          {
-            name: "Professional",
-            priceId: "price_1Rc9G1PthsRl3XNkjdbbCOle",
-            limits: {
-              projects: 5,
-            },
-          },
-          {
-            name: "Partner",
-            priceId: "price_1Rc9G1PthsRl3XNkMxgFOUmF",
-            limits: {
-              projects: -1, // -1 表示无限
-            },
-          },
-        ],
+        plans: subscriptionPlans,
       },
     }),
   );
 }
 
-export const auth = betterAuth({
+const authOptions = {
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -81,9 +60,26 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  // 使用环境变量中的密钥
   secret: env.BETTER_AUTH_SECRET,
-  // 只有在有配置的情况下才添加社交提供商
   socialProviders,
-  plugins,
+  plugins: basePlugins,
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth({
+  ...authOptions,
+  plugins: [
+    ...basePlugins,
+    customSession(async ({ session, user: authUser }: any) => {
+      if (!authUser) {
+        return session;
+      }
+      return {
+        ...session,
+        user: {
+          ...authUser,
+          stripeCustomerId: authUser.stripeCustomerId,
+        },
+      };
+    }, authOptions),
+  ],
 });

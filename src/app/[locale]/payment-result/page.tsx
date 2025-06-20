@@ -29,6 +29,7 @@ interface PaymentResult {
   customer: string | null;
   paymentMethod: string | null;
   subscriptionStatus: string | null;
+  receiptUrl?: string;
 }
 
 // Client component that uses useSearchParams
@@ -218,7 +219,12 @@ function PaymentResultContent() {
               </Link>
             </Button>
             {isSuccess && !loading && (
-              <Button size="sm" className="flex-1">
+              <Button
+                size="sm"
+                className="flex-1"
+                onClick={() => paymentData?.receiptUrl && window.open(paymentData.receiptUrl, "_blank")}
+                disabled={!paymentData?.receiptUrl}
+              >
                 <Download className="h-4 w-4 mr-1" />
                 Download Receipt
               </Button>

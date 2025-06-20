@@ -5,65 +5,13 @@ import { useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { authClient } from "~/lib/auth/client";
-
-// Pricing plans data
-const pricingPlans = [
-  {
-    name: "Supporter",
-    price: "$9",
-    priceId: "price_1Rc9G1PthsRl3XNksFERHQkW", // 请替换为真实的 Price ID
-    description: "For individual developers and hobbyists.",
-    features: [
-      "Access to all core features",
-      "Community support",
-      "Special badge in the community",
-      "Name on the supporters list",
-    ],
-    buttonText: "Get Started",
-    buttonVariant: "outline" as const,
-    popular: false,
-  },
-  {
-    name: "Professional",
-    price: "$29",
-    priceId: "price_1Rc9G1PthsRl3XNkjdbbCOle", // 请替换为真实的 Price ID
-    description: "For professional developers and small teams.",
-    features: [
-      "All Supporter features",
-      "Priority support",
-      "Early access to new features",
-    ],
-    buttonText: "Get Started",
-    buttonVariant: "default" as const,
-    popular: true,
-  },
-  {
-    name: "Partner",
-    price: "$99",
-    priceId: "price_1Rc9G1PthsRl3XNkMxgFOUmF", // 请替换为真实的 Price ID
-    description: "For businesses and enterprises.",
-    features: [
-      "All Professional features",
-      "Direct communication channel",
-      "Logo on our homepage",
-      "Custom feature prioritization",
-    ],
-    buttonText: "Contact Us",
-    buttonVariant: "outline" as const,
-    popular: false,
-  },
-];
+import { getStripe } from "~/lib/stripe/client";
+import { subscriptionPlans } from "~/lib/stripe/plans";
 
 export function Pricing() {
   const [loading, setLoading] = useState(false);
 
-  const handleCheckout = async (plan: typeof pricingPlans[number]) => {
-    if (plan.priceId.includes("placeholder")) {
-      console.error("Please replace the placeholder price ID in src/components/pricing.tsx with your actual Stripe price ID.");
-      return;
-    }
-
+  const handleCheckout = async (plan: (typeof subscriptionPlans)[number]) => {
     if (plan.name === "Partner") {
       // Handle contact for custom plan
       window.location.href = "mailto:contact@example.com";
@@ -72,11 +20,27 @@ export function Pricing() {
 
     setLoading(true);
     try {
-      await authClient.subscription.upgrade({
-        plan: plan.name.toLowerCase(),
-        successUrl: `${window.location.origin}/payment-result?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: window.location.origin,
+      const response = await fetch("/api/stripe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ priceId: plan.priceId }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to create checkout session.");
+      }
+
+      const { sessionId } = await response.json();
+      const stripe = await getStripe();
+
+      if (stripe) {
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+        if (error) {
+          console.error("Stripe redirect error:", error);
+        }
+      }
     } catch (error) {
       console.error("Error during checkout:", error);
     } finally {
@@ -86,7 +50,7 @@ export function Pricing() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      {pricingPlans.map((plan, index) => (
+      {subscriptionPlans.map((plan, index) => (
         <Card
           key={index}
           className={`border relative ${plan.popular ? "border-primary shadow-md" : ""}`}
@@ -102,8 +66,11 @@ export function Pricing() {
           <CardHeader>
             <CardTitle>{plan.name}</CardTitle>
             <div className="mt-4">
-              <span className="text-3xl font-bold">{plan.price}</span>
-              {plan.price !== "Custom" && <span className="text-muted-foreground ml-1">/month</span>}
+              <span className="text-3xl font-bold">
+                $
+                {plan.price / 100}
+              </span>
+              <span className="text-muted-foreground ml-1">/month</span>
             </div>
             <CardDescription className="mt-2">{plan.description}</CardDescription>
           </CardHeader>
@@ -123,9 +90,9 @@ export function Pricing() {
               className="w-full"
               size="lg"
               onClick={() => handleCheckout(plan)}
-              disabled={loading || !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+              disabled={loading}
             >
-              {loading ? "Redirecting..." : plan.buttonText}
+              {loading ? "Redirecting..." : plan.name === "Partner" ? "Contact Us" : "Get Started"}
             </Button>
           </CardContent>
         </Card>

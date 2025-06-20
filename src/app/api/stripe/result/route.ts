@@ -19,10 +19,14 @@ export async function GET(req: Request) {
     // 获取Stripe会话信息
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    // 获取支付意图详情
+    // 获取支付意图详情，并展开charge以便获取收据URL
     let paymentIntent = null;
+    let charge = null;
     if (session.payment_intent) {
       paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent as string);
+      if (paymentIntent.latest_charge) {
+        charge = await stripe.charges.retrieve(paymentIntent.latest_charge as string);
+      }
     }
 
     // 获取订阅信息（如果是订阅类型的支付）
@@ -50,6 +54,7 @@ export async function GET(req: Request) {
       customer: session.customer,
       paymentMethod: paymentIntent?.payment_method_types?.[0] || null,
       subscriptionStatus: subscription?.status || null,
+      receiptUrl: charge?.receipt_url,
     };
 
     return NextResponse.json(result);
