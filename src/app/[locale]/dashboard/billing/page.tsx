@@ -2,12 +2,12 @@
 
 import type { Subscription } from "@better-auth/stripe";
 import { ExternalLink } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DashboardShell } from "~/components/dashboard/dashboard-shell";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { authClient } from "~/lib/auth/client";
+import { Link } from "~/lib/i18n/navigation";
 import { subscriptionPlans } from "~/lib/stripe/plans";
 
 interface Invoice {

@@ -1,7 +1,6 @@
 "use client";
 
 import { Github, Loader, LogIn } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -15,6 +14,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { authClient } from "~/lib/auth/client";
+import { Link } from "~/lib/i18n/navigation";
 
 export default function SignInPage() {
   const [loading, setLoading] = useState(false);

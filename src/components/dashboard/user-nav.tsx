@@ -1,10 +1,9 @@
 "use client";
 
 import { LogOut, User } from "lucide-react";
-import Link from "next/link";
-
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,20 +13,21 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { authClient } from "~/lib/auth/client";
+import { Link, useRouter } from "~/lib/i18n/navigation";
 
 // 简化版的Better Auth集成
 // 在实际项目中，应该使用Better Auth的API和SDK
 export function UserNav() {
   // Use Better Auth's authClient to get user session
   const { data: user, isPending } = authClient.useSession();
+  const router = useRouter();
 
   // Handle logout
   const handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          // Redirect to homepage after logout
-          window.location.href = "/";
+          router.push("/sign-in");
         },
       },
     });

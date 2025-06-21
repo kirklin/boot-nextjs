@@ -46,7 +46,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@stripe/stripe-js": "^7.3.1",
-    "better-auth": "^1.2.9",
+    "better-auth": "^1.2.10",
     "cfuse": "^0.1.2",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",

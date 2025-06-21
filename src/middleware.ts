@@ -18,6 +18,10 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
+  if (!sessionCookie && pathname.includes("/dashboard")) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
+
   return intlMiddleware(request);
 }
 

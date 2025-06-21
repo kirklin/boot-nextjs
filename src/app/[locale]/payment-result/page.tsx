@@ -2,11 +2,10 @@
 
 import { motion } from "framer-motion";
 import { CalendarClock, CheckCircle2, ChevronLeft, Download, Receipt, XCircle } from "lucide-react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-
 import { Badge } from "~/components/ui/badge";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -17,6 +16,7 @@ import {
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { Skeleton } from "~/components/ui/skeleton";
+import { Link } from "~/lib/i18n/navigation";
 
 // Define payment result data type
 interface PaymentResult {
