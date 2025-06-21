@@ -1,19 +1,30 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-
+import { auth } from "~/lib/auth/server";
 import { stripe } from "~/lib/stripe/server";
 
 export async function POST(req: Request) {
+  const session = await auth.api.getSession({ headers: await headers() }).catch(() => null);
+
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!stripe) {
     return NextResponse.json({ error: "Stripe is not configured." }, { status: 500 });
   }
+
   const { priceId } = await req.json();
 
-  // Log the key prefix to verify which key is being used (test vs. live)
-  console.warn("Using Stripe key with prefix:", process.env.STRIPE_SECRET_KEY?.substring(0, 8));
+  if (!priceId) {
+    return NextResponse.json({ error: "priceId is required" }, { status: 400 });
+  }
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    const checkoutSession = await stripe.checkout.sessions.create({
+      customer: session.user.stripeCustomerId || undefined,
+      customer_email: session.user.stripeCustomerId ? undefined : session.user.email,
       payment_method_types: ["card"],
       line_items: [
         {
@@ -23,17 +34,16 @@ export async function POST(req: Request) {
       ],
       mode: "subscription",
       success_url: `${req.headers.get("origin")}/payment-result?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/`,
+      cancel_url: `${req.headers.get("origin")}/pricing`,
     });
 
-    return NextResponse.json({ sessionId: session.id });
+    return NextResponse.json({ sessionId: checkoutSession.id });
   } catch (err) {
     console.error("Stripe API error:", err);
     if (err instanceof Stripe.errors.StripeError) {
       const { message, type } = err;
       return NextResponse.json({ error: { message, type } }, { status: 500 });
     }
-    // Handle non-Stripe errors
     return NextResponse.json({ error: { message: "An unknown error occurred." } }, { status: 500 });
   }
 }

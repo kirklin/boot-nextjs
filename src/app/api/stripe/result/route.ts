@@ -16,24 +16,15 @@ export async function GET(req: Request) {
   }
 
   try {
-    // 获取Stripe会话信息
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["line_items", "customer", "subscription", "payment_intent.latest_charge"],
+    });
 
-    // 获取支付意图详情，并展开charge以便获取收据URL
-    let paymentIntent = null;
-    let charge = null;
-    if (session.payment_intent) {
-      paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent as string);
-      if (paymentIntent.latest_charge) {
-        charge = await stripe.charges.retrieve(paymentIntent.latest_charge as string);
-      }
-    }
-
-    // 获取订阅信息（如果是订阅类型的支付）
-    let subscription = null;
-    if (session.subscription) {
-      subscription = await stripe.subscriptions.retrieve(session.subscription as string);
-    }
+    const paymentIntent = session.payment_intent;
+    const charge
+      = paymentIntent && typeof paymentIntent !== "string"
+        ? (paymentIntent.latest_charge as Stripe.Charge | null)
+        : null;
 
     // 格式化日期和时间
     const createdAt = new Date(session.created * 1000);
@@ -51,9 +42,9 @@ export async function GET(req: Request) {
       date,
       time,
       status: session.payment_status,
-      customer: session.customer,
-      paymentMethod: paymentIntent?.payment_method_types?.[0] || null,
-      subscriptionStatus: subscription?.status || null,
+      customer: (session.customer as Stripe.Customer)?.email || null,
+      paymentMethod: charge?.payment_method_details?.type || null,
+      subscriptionStatus: (session.subscription as Stripe.Subscription)?.status || null,
       receiptUrl: charge?.receipt_url,
     };
 

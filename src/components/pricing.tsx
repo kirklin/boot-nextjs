@@ -1,17 +1,35 @@
 "use client";
 
 import { CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { getStripe } from "~/lib/stripe/client";
+import { authClient } from "~/lib/auth/client";
+import { useRouter } from "~/lib/i18n/navigation";
 import { subscriptionPlans } from "~/lib/stripe/plans";
 
 export function Pricing() {
   const [loading, setLoading] = useState(false);
+  const { data: user } = authClient.useSession();
+  const router = useRouter();
+  const [activeSubscription, setActiveSubscription] = useState<any>(null);
+
+  useEffect(() => {
+    if (user) {
+      authClient.subscription.list().then(({ data }) => {
+        const sub = data?.find(s => s.status === "active" || s.status === "trialing");
+        setActiveSubscription(sub || null);
+      });
+    }
+  }, [user]);
 
   const handleCheckout = async (plan: (typeof subscriptionPlans)[number]) => {
+    if (!user) {
+      router.push("/sign-in");
+      return;
+    }
+
     if (plan.name === "Partner") {
       // Handle contact for custom plan
       window.location.href = "mailto:contact@example.com";
@@ -20,27 +38,12 @@ export function Pricing() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/stripe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ priceId: plan.priceId }),
+      await authClient.subscription.upgrade({
+        plan: plan.name,
+        successUrl: `${window.location.origin}/dashboard/billing`,
+        cancelUrl: window.location.href,
+        ...(activeSubscription && { subscriptionId: activeSubscription.id }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to create checkout session.");
-      }
-
-      const { sessionId } = await response.json();
-      const stripe = await getStripe();
-
-      if (stripe) {
-        const { error } = await stripe.redirectToCheckout({ sessionId });
-        if (error) {
-          console.error("Stripe redirect error:", error);
-        }
-      }
     } catch (error) {
       console.error("Error during checkout:", error);
     } finally {
@@ -90,9 +93,20 @@ export function Pricing() {
               className="w-full"
               size="lg"
               onClick={() => handleCheckout(plan)}
-              disabled={loading}
+              disabled={
+                loading
+                || (activeSubscription
+                  && plan.price
+                  < (subscriptionPlans.find(p => p.name === activeSubscription.plan)
+                    ?.price ?? Infinity))
+                  || plan.name === activeSubscription?.plan
+              }
             >
-              {loading ? "Redirecting..." : plan.name === "Partner" ? "Contact Us" : "Get Started"}
+              {loading
+                ? "Redirecting..."
+                : plan.name === activeSubscription?.plan
+                  ? "Current Plan"
+                  : "Upgrade"}
             </Button>
           </CardContent>
         </Card>

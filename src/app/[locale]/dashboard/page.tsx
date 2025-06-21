@@ -34,29 +34,14 @@ export default function DashboardPage() {
   const handleUpgrade = async (plan: (typeof subscriptionPlans)[number]) => {
     setCheckoutLoading(true);
     try {
-      const response = await fetch("/api/stripe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ priceId: plan.priceId }),
+      await authClient.subscription.upgrade({
+        plan: plan.name,
+        successUrl: `${window.location.origin}/dashboard/billing`,
+        cancelUrl: window.location.href,
+        ...(subscription && { subscriptionId: subscription.id }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to create checkout session.");
-      }
-
-      const { sessionId } = await response.json();
-      const stripe = await getStripe();
-
-      if (stripe) {
-        const { error } = await stripe.redirectToCheckout({ sessionId });
-        if (error) {
-          console.error("Stripe redirect error:", error);
-        }
-      }
     } catch (error) {
-      console.error("Error during checkout:", error);
+      console.error("Error during upgrade:", error);
     } finally {
       setCheckoutLoading(false);
     }
@@ -127,8 +112,20 @@ export default function DashboardPage() {
                       </Button>
                     )
                   : (
-                      <Button variant="default" className="w-full" onClick={() => handleUpgrade(plan)} disabled={isCheckoutLoading}>
-                        {isCheckoutLoading ? "Redirecting..." : `Upgrade to ${plan.name}`}
+                      <Button
+                        variant="default"
+                        className="w-full"
+                        onClick={() => handleUpgrade(plan)}
+                        disabled={
+                          isCheckoutLoading
+                          || (currentPlanDetails && plan.price < currentPlanDetails.price)
+                        }
+                      >
+                        {isCheckoutLoading
+                          ? "Redirecting..."
+                          : currentPlanName === "Free"
+                            ? "Choose Plan"
+                            : "Upgrade"}
                       </Button>
                     )}
               </CardFooter>
