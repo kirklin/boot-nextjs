@@ -53,9 +53,9 @@ export function Pricing() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      {subscriptionPlans.map((plan, index) => (
+      {subscriptionPlans.map(plan => (
         <Card
-          key={index}
+          key={plan.name}
           className={`border relative ${plan.popular ? "border-primary shadow-md" : ""}`}
         >
           {plan.popular && (
@@ -80,8 +80,8 @@ export function Pricing() {
 
           <CardContent className="space-y-6">
             <ul className="space-y-2">
-              {plan.features.map((feature, i) => (
-                <li key={i} className="flex items-center gap-2">
+              {plan.features.map(feature => (
+                <li key={feature} className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
                   <span>{feature}</span>
                 </li>

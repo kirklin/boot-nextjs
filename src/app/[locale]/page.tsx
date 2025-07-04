@@ -187,8 +187,8 @@ export default function HomePage({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="border bg-background hover:shadow-md transition-shadow">
+            {features.map(feature => (
+              <Card key={feature.title} className="border bg-background hover:shadow-md transition-shadow">
                 <CardHeader>
                   <div className="bg-primary/10 p-3 rounded-lg w-fit text-primary mb-4">
                     {feature.icon}
@@ -232,8 +232,8 @@ export default function HomePage({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {caseStudies.map((study, index) => (
-              <Link key={index} href={study.url} target="_blank" className="group">
+            {caseStudies.map(study => (
+              <Link key={study.url} href={study.url} target="_blank" className="group">
                 <Card className="overflow-hidden border hover:shadow-lg transition-all hover:-translate-y-1 h-full">
                   <div className="aspect-video relative bg-muted">
                     <Image
@@ -252,8 +252,8 @@ export default function HomePage({
                   <CardContent className="space-y-4">
                     <CardDescription className="text-base">{study.description}</CardDescription>
                     <div className="flex flex-wrap gap-2">
-                      {study.tags.map((tag, i) => (
-                        <Badge key={i} variant="secondary">{tag}</Badge>
+                      {study.tags.map(tag => (
+                        <Badge key={tag} variant="secondary">{tag}</Badge>
                       ))}
                     </div>
                   </CardContent>
@@ -288,8 +288,8 @@ export default function HomePage({
           </div>
 
           <div className="space-y-6">
-            {faqs.map((faq, index) => (
-              <Card key={index} className="bg-background">
+            {faqs.map(faq => (
+              <Card key={faq.question} className="bg-background">
                 <CardHeader>
                   <CardTitle className="text-xl">{faq.question}</CardTitle>
                 </CardHeader>

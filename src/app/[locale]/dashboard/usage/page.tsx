@@ -95,8 +95,8 @@ export default function UsagePage() {
             <h3 className="text-sm font-medium text-muted-foreground">Recent Daily Usage</h3>
             <div className="mt-4">
               <div className="space-y-2">
-                {usageData.history.map((day, index) => (
-                  <div key={index} className="flex items-center gap-3">
+                {usageData.history.map(day => (
+                  <div key={day.date} className="flex items-center gap-3">
                     <div className="w-16 text-xs text-muted-foreground">{day.date}</div>
                     <div className="flex h-2 flex-1 overflow-hidden rounded-full bg-secondary">
                       <div

@@ -63,9 +63,9 @@ export function DashboardNav() {
 
       {/* Nav links */}
       <nav className="flex-1 space-y-1 p-2">
-        {navItems.map((item, index) => (
+        {navItems.map(item => (
           <Link
-            key={index}
+            key={item.href}
             href={item.href}
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",

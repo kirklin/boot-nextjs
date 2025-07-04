@@ -48,9 +48,10 @@ function ChartContainer({
 }) {
   const uniqueId = React.useId();
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+  const value = React.useMemo(() => ({ config }), [config]);
 
   return (
-    <ChartContext value={{ config }}>
+    <ChartContext value={value}>
       <div
         data-slot="chart"
         data-chart={chartId}
@@ -80,6 +81,7 @@ function ChartStyle({ id, config }: { id: string; config: ChartConfig }) {
 
   return (
     <style
+      // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(

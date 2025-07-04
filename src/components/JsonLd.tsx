@@ -19,8 +19,10 @@ export function JsonLd({ data }: JsonLdProps) {
 
   if (isAmp) {
     return (
+
       <script
         type="application/ld+json"
+        // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
         dangerouslySetInnerHTML={{ __html: jsonLdData }}
         key="jsonld-data"
       />
@@ -31,6 +33,7 @@ export function JsonLd({ data }: JsonLdProps) {
     <Script
       id="json-ld"
       type="application/ld+json"
+      // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{ __html: jsonLdData }}
       strategy="afterInteractive"
     />

@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "~/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { authClient } from "~/lib/auth/client";
-import { getStripe } from "~/lib/stripe/client";
 import { subscriptionPlans } from "~/lib/stripe/plans";
 
 export default function DashboardPage() {
@@ -90,8 +89,8 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="flex-grow">
                 <ul className="space-y-2">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
+                  {plan.features.map(feature => (
+                    <li key={feature} className="flex items-start">
                       {plan.name.toLowerCase() === currentPlanName.toLowerCase()
                         ? (
                             <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mr-2 mt-0.5" />

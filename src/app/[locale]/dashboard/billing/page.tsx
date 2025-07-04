@@ -157,9 +157,9 @@ export default function BillingPage() {
             <div className="rounded-md border">
               <div className="divide-y">
                 {/* TODO: Fetch real invoices from Stripe API */}
-                {invoices.map((invoice, index) => (
+                {invoices.map(invoice => (
                   <div
-                    key={index}
+                    key={invoice.id}
                     className="flex items-center justify-between p-4"
                   >
                     <div>
