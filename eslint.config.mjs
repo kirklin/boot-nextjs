@@ -6,6 +6,7 @@ export default kirklin({
   react: true,
   typescript: true,
   formatters: true,
+  nextjs: true,
 },
 // --- Next.js Specific Rules ---
 {
