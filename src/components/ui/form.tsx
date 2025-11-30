@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 "use client";
 
 import type * as LabelPrimitive from "@radix-ui/react-label";
@@ -16,6 +17,14 @@ import { Label } from "~/components/ui/label";
 import { cn } from "~/lib/utils/index";
 
 const Form = FormProvider;
+
+interface FormItemContextValue {
+  id: string;
+}
+
+const FormItemContext = React.createContext<FormItemContextValue>(
+  {} as FormItemContextValue,
+);
 
 interface FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -43,7 +52,6 @@ function FormField<
 
 function useFormField() {
   const fieldContext = React.use(FormFieldContext);
-  // eslint-disable-next-line ts/no-use-before-define
   const itemContext = React.use(FormItemContext);
   const { getFieldState } = useFormContext();
   const formState = useFormState({ name: fieldContext.name });
@@ -64,14 +72,6 @@ function useFormField() {
     ...fieldState,
   };
 }
-
-interface FormItemContextValue {
-  id: string;
-}
-
-const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
-);
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   const id = React.useId();
@@ -163,6 +163,5 @@ export {
   FormItem,
   FormLabel,
   FormMessage,
-  // eslint-disable-next-line react-refresh/only-export-components
   useFormField,
 };
