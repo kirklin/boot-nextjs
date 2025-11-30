@@ -1,6 +1,5 @@
 "use client";
 
-import { useAmp } from "next/amp";
 import Script from "next/script";
 import * as React from "react";
 
@@ -13,21 +12,8 @@ interface JsonLdProps {
  * 用于向页面注入JSON-LD格式的结构化数据，帮助搜索引擎更好地理解页面内容
  */
 export function JsonLd({ data }: JsonLdProps) {
-  const isAmp = useAmp();
   // 将数据转换为JSON字符串
   const jsonLdData = JSON.stringify(data);
-
-  if (isAmp) {
-    return (
-
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
-        dangerouslySetInnerHTML={{ __html: jsonLdData }}
-        key="jsonld-data"
-      />
-    );
-  }
 
   return (
     <Script
