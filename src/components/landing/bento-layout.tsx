@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Github, Sparkles } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Badge } from "~/components/ui/badge";
 
@@ -58,7 +59,7 @@ export function BentoLayout({ features, caseStudies }: BentoLayoutProps) {
       y: 0,
       transition: {
         duration: 0.4,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -150,11 +151,12 @@ export function BentoLayout({ features, caseStudies }: BentoLayoutProps) {
           >
             {/* Background Image */}
             <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-500">
-              <img
+              <Image
                 key={currentStudy.image}
                 src={currentStudy.image}
                 alt={currentStudy.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
             </div>
@@ -166,9 +168,9 @@ export function BentoLayout({ features, caseStudies }: BentoLayoutProps) {
                 </Badge>
                 {caseStudies.length > 1 && (
                   <div className="flex gap-1.5">
-                    {caseStudies.map((_, idx) => (
+                    {caseStudies.map((study, idx) => (
                       <div
-                        key={idx}
+                        key={study.title}
                         className={cn(
                           "w-1.5 h-1.5 rounded-full transition-all duration-300",
                           idx === currentIndex ? "bg-white w-3" : "bg-white/40",
