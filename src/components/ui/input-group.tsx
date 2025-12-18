@@ -64,8 +64,9 @@ function InputGroupAddon({
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
   return (
+  // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
-      role="button"
+      role="group"
       data-slot="input-group-addon"
       data-align={align}
       className={cn(inputGroupAddonVariants({ align }), className)}
@@ -81,6 +82,7 @@ function InputGroupAddon({
           e.currentTarget.parentElement?.querySelector("input")?.focus();
         }
       }}
+      /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
       tabIndex={0}
       {...props}
     />
