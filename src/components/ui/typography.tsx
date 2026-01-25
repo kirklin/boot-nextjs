@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Link } from "~/lib/i18n/navigation";
 import { cn } from "~/lib/utils";
 
