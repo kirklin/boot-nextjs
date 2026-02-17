@@ -137,7 +137,7 @@ export function TerminalStatus({
       className={cn("flex items-center gap-2 text-xs text-zinc-400", className)}
       {...props}
     >
-      {children ?? <Shimmer className="w-16" />}
+      {children ?? <Shimmer className="w-16">Processing...</Shimmer>}
     </div>
   );
 }
