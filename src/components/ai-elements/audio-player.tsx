@@ -89,7 +89,9 @@ export function AudioPlayerElement({ ...props }: AudioPlayerElementProps) {
           : `data:${props.data.mediaType};base64,${props.data.base64}`
       }
       {...props}
-    />
+    >
+      <track kind="captions" />
+    </audio>
   );
 }
 

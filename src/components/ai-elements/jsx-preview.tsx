@@ -31,6 +31,7 @@ const JSXPreviewContext = createContext<JSXPreviewContextValue | null>(null);
 
 const TAG_REGEX = /<\/?([a-z][a-z0-9]*)\s*([^>]*?)(\/)?>/i;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useJSXPreview() {
   const context = use(JSXPreviewContext);
   if (!context) {

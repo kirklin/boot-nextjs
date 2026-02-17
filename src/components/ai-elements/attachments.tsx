@@ -12,6 +12,7 @@ import {
   VideoIcon,
   XIcon,
 } from "lucide-react";
+import NextImage from "next/image";
 import { createContext, use, useCallback, useMemo } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -52,6 +53,7 @@ const mediaCategoryIcons: Record<AttachmentMediaCategory, typeof ImageIcon> = {
 // Utility Functions
 // ============================================================================
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function getMediaCategory(data: AttachmentData): AttachmentMediaCategory {
   if (data.type === "source-document") {
     return "source";
@@ -75,6 +77,7 @@ export function getMediaCategory(data: AttachmentData): AttachmentMediaCategory 
   return "unknown";
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function getAttachmentLabel(data: AttachmentData): string {
   if (data.type === "source-document") {
     return data.title || data.filename || "Source";
@@ -87,7 +90,7 @@ export function getAttachmentLabel(data: AttachmentData): string {
 function renderAttachmentImage(url: string, filename: string | undefined, isGrid: boolean) {
   return isGrid
     ? (
-        <img
+        <NextImage
           alt={filename || "Image"}
           className="size-full object-cover"
           height={96}
@@ -96,7 +99,7 @@ function renderAttachmentImage(url: string, filename: string | undefined, isGrid
         />
       )
     : (
-        <img
+        <NextImage
           alt={filename || "Image"}
           className="size-full rounded object-cover"
           height={20}
@@ -129,10 +132,12 @@ const AttachmentContext = createContext<AttachmentContextValue | null>(null);
 // Hooks
 // ============================================================================
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAttachmentsContext() {
   return use(AttachmentsContext) ?? { variant: "grid" as const };
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAttachmentContext() {
   const ctx = use(AttachmentContext);
   if (!ctx) {

@@ -126,6 +126,7 @@ function defaultFormatMessage(message: ConversationMessage): string {
   return `**${roleLabel}:** ${message.content}`;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function messagesToMarkdown(messages: ConversationMessage[], formatMessage: (
   message: ConversationMessage,
   index: number,

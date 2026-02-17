@@ -37,6 +37,7 @@ interface ReasoningContextValue {
 
 const ReasoningContext = createContext<ReasoningContextValue | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useReasoning() {
   const context = use(ReasoningContext);
   if (!context) {

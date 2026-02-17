@@ -83,6 +83,19 @@ function TokenSpan({ token }: { token: ThemedToken }) {
   );
 }
 
+// Line number styles using CSS counters
+const LINE_NUMBER_CLASSES = cn(
+  "block",
+  "before:content-[counter(line)]",
+  "before:inline-block",
+  "before:[counter-increment:line]",
+  "before:w-8",
+  "before:mr-4",
+  "before:text-right",
+  "before:text-muted-foreground/50",
+  "before:font-mono",
+  "before:select-none",
+);
 // Line rendering component
 function LineSpan({
   keyedLine,
@@ -176,6 +189,7 @@ function createRawTokens(code: string): TokenizedCode {
 }
 
 // Synchronous highlight with callback for async results
+// eslint-disable-next-line react-refresh/only-export-components
 export function highlightCode(code: string, language: BundledLanguage,
   // oxlint-disable-next-line eslint-plugin-promise(prefer-await-to-callbacks)
   callback?: (result: TokenizedCode) => void): TokenizedCode | null {
@@ -236,20 +250,6 @@ export function highlightCode(code: string, language: BundledLanguage,
 
   return null;
 }
-
-// Line number styles using CSS counters
-const LINE_NUMBER_CLASSES = cn(
-  "block",
-  "before:content-[counter(line)]",
-  "before:inline-block",
-  "before:[counter-increment:line]",
-  "before:w-8",
-  "before:mr-4",
-  "before:text-right",
-  "before:text-muted-foreground/50",
-  "before:font-mono",
-  "before:select-none",
-);
 
 const CodeBlockBody = memo(
   ({

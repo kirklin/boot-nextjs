@@ -283,6 +283,7 @@ export function MicSelectorValue({
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAudioDevices() {
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [loading, setLoading] = useState(true);

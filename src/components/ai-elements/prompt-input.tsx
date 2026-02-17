@@ -133,6 +133,7 @@ const ProviderAttachmentsContext = createContext<AttachmentsContext | null>(
   null,
 );
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePromptInputController() {
   const ctx = use(PromptInputController);
   if (!ctx) {
@@ -148,6 +149,7 @@ function useOptionalPromptInputController() {
   return use(PromptInputController);
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useProviderAttachments() {
   const ctx = use(ProviderAttachmentsContext);
   if (!ctx) {
@@ -296,6 +298,7 @@ export function PromptInputProvider({
 
 const LocalAttachmentsContext = createContext<AttachmentsContext | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePromptInputAttachments() {
   // Prefer local context (inside PromptInput) as it has validation, fall back to provider
   const provider = useOptionalProviderAttachments();
@@ -320,9 +323,11 @@ export interface ReferencedSourcesContext {
   clear: () => void;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const LocalReferencedSourcesContext
   = createContext<ReferencedSourcesContext | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function usePromptInputReferencedSources() {
   const ctx = use(LocalReferencedSourcesContext);
   if (!ctx) {
@@ -1257,6 +1262,7 @@ export function PromptInputTab({
 export type PromptInputTabLabelProps = HTMLAttributes<HTMLHeadingElement>;
 
 export function PromptInputTabLabel({
+  children,
   className,
   ...props
 }: PromptInputTabLabelProps) {
@@ -1267,7 +1273,9 @@ export function PromptInputTabLabel({
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </h3>
   );
 }
 
