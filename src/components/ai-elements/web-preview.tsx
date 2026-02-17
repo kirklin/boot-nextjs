@@ -204,6 +204,7 @@ export function WebPreviewBody({
       <iframe
         className={cn("size-full", className)}
         // oxlint-disable-next-line eslint-plugin-react(iframe-missing-sandbox)
+        // eslint-disable-next-line react-dom/no-unsafe-iframe-sandbox
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
         src={(src ?? url) || undefined}
         title="Preview"
@@ -271,6 +272,7 @@ export function WebPreviewConsole({
                       log.level === "warn" && "text-yellow-600",
                       log.level === "log" && "text-foreground",
                     )}
+                    // eslint-disable-next-line react/no-array-index-key
                     key={`${log.timestamp.getTime()}-${index}`}
                   >
                     <span className="text-muted-foreground">

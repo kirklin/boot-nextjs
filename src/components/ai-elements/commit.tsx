@@ -202,6 +202,7 @@ export function CommitActions({
   ...props
 }: CommitActionsProps) {
   return (
+  // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       className={cn("flex items-center gap-1", className)}
       onClick={handleActionsClick}

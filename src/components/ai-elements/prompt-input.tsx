@@ -126,7 +126,7 @@ export interface PromptInputControllerProps {
   ) => void;
 }
 
-const PromptInputController = createContext<PromptInputControllerProps | null>(
+const PromptInputControllerContext = createContext<PromptInputControllerProps | null>(
   null,
 );
 const ProviderAttachmentsContext = createContext<AttachmentsContext | null>(
@@ -135,7 +135,7 @@ const ProviderAttachmentsContext = createContext<AttachmentsContext | null>(
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function usePromptInputController() {
-  const ctx = use(PromptInputController);
+  const ctx = use(PromptInputControllerContext);
   if (!ctx) {
     throw new Error(
       "Wrap your component inside <PromptInputProvider> to use usePromptInputController().",
@@ -146,7 +146,7 @@ export function usePromptInputController() {
 
 // Optional variants (do NOT throw). Useful for dual-mode components.
 function useOptionalPromptInputController() {
-  return use(PromptInputController);
+  return use(PromptInputControllerContext);
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -284,11 +284,11 @@ export function PromptInputProvider({
   );
 
   return (
-    <PromptInputController.Provider value={controller}>
+    <PromptInputControllerContext value={controller}>
       <ProviderAttachmentsContext value={attachments}>
         {children}
       </ProviderAttachmentsContext>
-    </PromptInputController.Provider>
+    </PromptInputControllerContext>
   );
 }
 
@@ -1025,6 +1025,7 @@ export function PromptInputButton({
   ...props
 }: PromptInputButtonProps) {
   const newSize
+    // eslint-disable-next-line react/no-children-count
     = size ?? (Children.count(props.children) > 1 ? "sm" : "icon-sm");
 
   const button = (

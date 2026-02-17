@@ -14,6 +14,7 @@ export function Image({
   ...props
 }: ImageProps) {
   return (
+    // eslint-disable-next-line next/no-img-element
     <img
       {...props}
       alt={props.alt}

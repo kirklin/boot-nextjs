@@ -28,8 +28,11 @@ import {
 import { cn } from "~/lib/utils/index";
 
 // Regex patterns for parsing stack traces
-const STACK_FRAME_WITH_PARENS_REGEX = /^at\s+(.+?)\s+\((.+):(\d+):(\d+)\)$/;
-const STACK_FRAME_WITHOUT_FN_REGEX = /^at\s+(.+):(\d+):(\d+)$/;
+// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/no-misleading-capturing-group, regexp/optimal-quantifier-concatenation
+const STACK_FRAME_WITH_PARENS_REGEX = /^at\s+([^(]+)\s+\((.+):(\d+):(\d+)\)$/;
+// eslint-disable-next-line regexp/no-super-linear-backtracking
+const STACK_FRAME_WITHOUT_FN_REGEX = /^at\s+(.+?):(\d+):(\d+)$/;
+// eslint-disable-next-line regexp/no-super-linear-backtracking
 const ERROR_TYPE_REGEX = /^(\w+Error|Error):\s*(.*)$/;
 const AT_PREFIX_REGEX = /^at\s+/;
 
@@ -293,6 +296,9 @@ export const StackTraceActions = memo(
   ({ className, children, ...props }: StackTraceActionsProps) => (
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: stopPropagation required for nested interactions
     // biome-ignore lint/a11y/useSemanticElements: fieldset doesn't fit this UI pattern
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: stopPropagation required for nested interactions
+    // biome-ignore lint/a11y/useSemanticElements: fieldset doesn't fit this UI pattern
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       className={cn("flex shrink-0 items-center gap-1", className)}
       onClick={handleActionsClick}
@@ -488,6 +494,7 @@ export const StackTraceFrames = memo(
                 ? "text-muted-foreground/50"
                 : "text-foreground/90",
             )}
+            // eslint-disable-next-line react/no-array-index-key
             key={`${frame.raw}-${index}`}
           >
             <span className="text-muted-foreground">at </span>

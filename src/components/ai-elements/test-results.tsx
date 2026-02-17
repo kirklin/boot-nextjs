@@ -18,9 +18,9 @@ import {
 } from "~/components/ui/collapsible";
 import { cn } from "~/lib/utils/index";
 
-type TestStatus = "passed" | "failed" | "skipped" | "running";
+type TestStatusType = "passed" | "failed" | "skipped" | "running";
 
-interface TestResultsSummary {
+interface TestResultsSummaryType {
   passed: number;
   failed: number;
   skipped: number;
@@ -29,7 +29,7 @@ interface TestResultsSummary {
 }
 
 interface TestResultsContextType {
-  summary?: TestResultsSummary;
+  summary?: TestResultsSummaryType;
 }
 
 const TestResultsContext = createContext<TestResultsContextType>({});
@@ -42,7 +42,7 @@ function formatDuration(ms: number) {
 }
 
 export type TestResultsProps = HTMLAttributes<HTMLDivElement> & {
-  summary?: TestResultsSummary;
+  summary?: TestResultsSummaryType;
 };
 
 export function TestResults({
@@ -230,7 +230,7 @@ export function TestResultsContent({
 
 interface TestSuiteContextType {
   name: string;
-  status: TestStatus;
+  status: TestStatusType;
 }
 
 const TestSuiteContext = createContext<TestSuiteContextType>({
@@ -240,7 +240,7 @@ const TestSuiteContext = createContext<TestSuiteContextType>({
 
 export type TestSuiteProps = ComponentProps<typeof Collapsible> & {
   name: string;
-  status: TestStatus;
+  status: TestStatusType;
 };
 
 export function TestSuite({
@@ -349,7 +349,7 @@ export function TestSuiteContent({
 
 interface TestContextType {
   name: string;
-  status: TestStatus;
+  status: TestStatusType;
   duration?: number;
 }
 
@@ -360,7 +360,7 @@ const TestContext = createContext<TestContextType>({
 
 export type TestProps = HTMLAttributes<HTMLDivElement> & {
   name: string;
-  status: TestStatus;
+  status: TestStatusType;
   duration?: number;
 };
 
@@ -395,21 +395,21 @@ export function Test({
   );
 }
 
-const statusStyles: Record<TestStatus, string> = {
+const statusStyles: Record<TestStatusType, string> = {
   failed: "text-red-600 dark:text-red-400",
   passed: "text-green-600 dark:text-green-400",
   running: "text-blue-600 dark:text-blue-400",
   skipped: "text-yellow-600 dark:text-yellow-400",
 };
 
-const statusIcons: Record<TestStatus, React.ReactNode> = {
+const statusIcons: Record<TestStatusType, React.ReactNode> = {
   failed: <XCircleIcon className="size-4" />,
   passed: <CheckCircle2Icon className="size-4" />,
   running: <CircleDotIcon className="size-4 animate-pulse" />,
   skipped: <CircleIcon className="size-4" />,
 };
 
-function TestStatusIcon({ status }: { status: TestStatus }) {
+function TestStatusIcon({ status }: { status: TestStatusType }) {
   return (
     <span className={cn("shrink-0", statusStyles[status])}>
       {statusIcons[status]}

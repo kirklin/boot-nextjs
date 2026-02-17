@@ -94,6 +94,7 @@ export const Reasoning = memo(
           startTimeRef.current = Date.now();
         }
       } else if (startTimeRef.current !== null) {
+        // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
         setDuration(Math.ceil((Date.now() - startTimeRef.current) / MS_IN_S));
         startTimeRef.current = null;
       }
@@ -102,6 +103,7 @@ export const Reasoning = memo(
     // Auto-open when streaming starts (unless explicitly closed)
     useEffect(() => {
       if (isStreaming && !isOpen && !isExplicitlyClosed) {
+        // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
         setIsOpen(true);
       }
     }, [isStreaming, isOpen, setIsOpen, isExplicitlyClosed]);

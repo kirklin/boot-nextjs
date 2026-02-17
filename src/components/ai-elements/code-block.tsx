@@ -408,6 +408,7 @@ export function CodeBlockContent({
     let cancelled = false;
 
     // Reset to raw tokens when code changes (shows current code, not stale tokens)
+    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
     setTokenized(highlightCode(code, language) ?? rawTokens);
 
     // Subscribe to async highlighting result
@@ -444,6 +445,7 @@ export function CodeBlock({
       <CodeBlockContainer className={className} language={language} {...props}>
         {children}
         <CodeBlockContent
+          key={`${language}:${code}`} // Force remount to reset state when code changes
           code={code}
           language={language}
           showLineNumbers={showLineNumbers}

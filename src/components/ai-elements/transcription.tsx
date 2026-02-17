@@ -7,10 +7,10 @@ import { useControllableState } from "@radix-ui/react-use-controllable-state";
 import { createContext, use, useCallback, useMemo } from "react";
 import { cn } from "~/lib/utils/index";
 
-type TranscriptionSegment = TranscriptionResult["segments"][number];
+type TranscriptionSegmentData = TranscriptionResult["segments"][number];
 
 interface TranscriptionContextValue {
-  segments: TranscriptionSegment[];
+  segments: TranscriptionSegmentData[];
   currentTime: number;
   onTimeUpdate: (time: number) => void;
   onSeek?: (time: number) => void;
@@ -31,10 +31,10 @@ function useTranscription() {
 }
 
 export type TranscriptionProps = Omit<ComponentProps<"div">, "children"> & {
-  segments: TranscriptionSegment[];
+  segments: TranscriptionSegmentData[];
   currentTime?: number;
   onSeek?: (time: number) => void;
-  children: (segment: TranscriptionSegment, index: number) => ReactNode;
+  children: (segment: TranscriptionSegmentData, index: number) => ReactNode;
 };
 
 export function Transcription({
@@ -75,7 +75,7 @@ export function Transcription({
 }
 
 export type TranscriptionSegmentProps = ComponentProps<"button"> & {
-  segment: TranscriptionSegment;
+  segment: TranscriptionSegmentData;
   index: number;
 };
 
