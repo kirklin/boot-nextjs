@@ -13,7 +13,7 @@ import { subscriptionPlans } from "~/lib/stripe/plans";
 
 export default function DashboardPage() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [isCheckoutLoading, setCheckoutLoading] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
   useEffect(() => {
     async function fetchSubscription() {
@@ -31,7 +31,7 @@ export default function DashboardPage() {
   }, []);
 
   const handleUpgrade = async (plan: (typeof subscriptionPlans)[number]) => {
-    setCheckoutLoading(true);
+    setIsCheckoutLoading(true);
     try {
       await authClient.subscription.upgrade({
         plan: plan.name,
@@ -42,7 +42,7 @@ export default function DashboardPage() {
     } catch (error) {
       console.error("Error during upgrade:", error);
     } finally {
-      setCheckoutLoading(false);
+      setIsCheckoutLoading(false);
     }
   };
 

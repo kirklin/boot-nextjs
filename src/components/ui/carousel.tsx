@@ -113,7 +113,7 @@ function Carousel({
 
   return (
     <CarouselContext
-      value={React.useMemo(() => ({
+      value={{
         carouselRef,
         api,
         opts,
@@ -123,7 +123,7 @@ function Carousel({
         scrollNext,
         canScrollPrev,
         canScrollNext,
-      }), [carouselRef, api, opts, orientation, scrollPrev, scrollNext, canScrollPrev, canScrollNext])}
+      }}
     >
       <div
         onKeyDownCapture={handleKeyDown}

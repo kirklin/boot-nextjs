@@ -1,7 +1,6 @@
-/* eslint-disable react-refresh/only-export-components */
 import type { VariantProps } from "class-variance-authority";
-import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
+import { Slot } from "radix-ui";
 
 import { Separator } from "~/components/ui/separator";
 import { cn } from "~/lib/utils/index";
@@ -46,7 +45,7 @@ function ButtonGroupText({
 }: React.ComponentProps<"div"> & {
   asChild?: boolean;
 }) {
-  const Comp = asChild ? Slot : "div";
+  const Comp = asChild ? Slot.Root : "div";
 
   return (
     <Comp
@@ -81,5 +80,6 @@ export {
   ButtonGroup,
   ButtonGroupSeparator,
   ButtonGroupText,
+  // eslint-disable-next-line react-refresh/only-export-components
   buttonGroupVariants,
 };
