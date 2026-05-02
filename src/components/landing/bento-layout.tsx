@@ -157,6 +157,8 @@ export function BentoLayout({ features, caseStudies }: BentoLayoutProps) {
                 src={currentStudy.image}
                 alt={currentStudy.title}
                 fill
+                sizes="(max-width: 1024px) 100vw, 33vw"
+                loading="eager"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
