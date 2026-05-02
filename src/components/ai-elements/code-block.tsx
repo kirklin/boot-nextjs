@@ -408,7 +408,7 @@ export function CodeBlockContent({
     let cancelled = false;
 
     // Reset to raw tokens when code changes (shows current code, not stale tokens)
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setTokenized(highlightCode(code, language) ?? rawTokens);
 
     // Subscribe to async highlighting result
@@ -484,10 +484,7 @@ export function CodeBlockCopyButton({
         await navigator.clipboard.writeText(code);
         setIsCopied(true);
         onCopy?.();
-        timeoutRef.current = window.setTimeout(
-          () => setIsCopied(false),
-          timeout,
-        );
+        timeoutRef.current = window.setTimeout(setIsCopied, timeout, false);
       }
     } catch (error) {
       onError?.(error as Error);

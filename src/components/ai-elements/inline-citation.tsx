@@ -177,9 +177,9 @@ export function InlineCitationCarouselIndex({
       return;
     }
 
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setCount(api.scrollSnapList().length);
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setCurrent(api.selectedScrollSnap() + 1);
 
     const handleSelect = () => {

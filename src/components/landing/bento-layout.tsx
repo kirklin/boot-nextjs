@@ -2,9 +2,10 @@
 
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { GithubIcon } from "~/components/icons/github";
 import { Badge } from "~/components/ui/badge";
 
 import { Button } from "~/components/ui/button";
@@ -104,7 +105,7 @@ export function BentoLayout({ features, caseStudies }: BentoLayoutProps) {
 
                 <Button asChild variant="outline" size="lg" className="rounded-full h-12 px-8 text-base hover:bg-accent hover:text-accent-foreground transition-all duration-300">
                   <Link href="https://github.com/kirklin/boot-nextjs" target="_blank">
-                    <Github className="mr-2 h-5 w-5" />
+                    <GithubIcon className="mr-2 h-5 w-5" />
                     Star on GitHub
                   </Link>
                 </Button>

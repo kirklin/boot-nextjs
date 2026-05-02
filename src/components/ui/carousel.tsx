@@ -64,9 +64,9 @@ function Carousel({
     if (!api) {
       return;
     }
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setCanScrollPrev(api.canScrollPrev());
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setCanScrollNext(api.canScrollNext());
   }, []);
 

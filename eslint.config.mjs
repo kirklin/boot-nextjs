@@ -25,5 +25,7 @@ jsxA11y.flatConfigs.recommended,
 {
   rules: {
     "node/prefer-global/process": "off", // Allow using `process.env`
+    "e18e/prefer-static-regex": "warn", // Downgrade to warning
+    "react/component-hook-factories": "off", // Allow component factories inside functions (e.g. calendar.tsx)
   },
 });

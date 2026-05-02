@@ -292,7 +292,7 @@ export function EnvironmentVariableCopyButton({
       await navigator.clipboard.writeText(getTextToCopy());
       setIsCopied(true);
       onCopy?.();
-      timeoutRef.current = window.setTimeout(() => setIsCopied(false), timeout);
+      timeoutRef.current = window.setTimeout(setIsCopied, timeout, false);
     } catch (error) {
       onError?.(error as Error);
     }

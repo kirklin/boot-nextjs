@@ -1,8 +1,9 @@
 "use client";
 
-import { Github, Loader, LogIn } from "lucide-react";
+import { Loader, LogIn } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { GithubIcon } from "~/components/icons/github";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -167,7 +168,7 @@ export default function SignUpPage() {
               className="h-10"
               disabled={isLoading}
             >
-              <Github className="size-4 mr-2" />
+              <GithubIcon className="size-4 mr-2" />
               GitHub
             </Button>
           </div>

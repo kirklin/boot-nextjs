@@ -111,10 +111,7 @@ export function SnippetCopyButton({
         await navigator.clipboard.writeText(code);
         setIsCopied(true);
         onCopy?.();
-        timeoutRef.current = window.setTimeout(
-          () => setIsCopied(false),
-          timeout,
-        );
+        timeoutRef.current = window.setTimeout(setIsCopied, timeout, false);
       }
     } catch (error) {
       onError?.(error as Error);

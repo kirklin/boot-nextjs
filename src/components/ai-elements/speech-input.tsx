@@ -165,7 +165,7 @@ export function SpeechInput({
     speechRecognition.addEventListener("error", handleError);
 
     recognitionRef.current = speechRecognition;
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setIsRecognitionReady(true);
 
     return () => {

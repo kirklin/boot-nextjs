@@ -52,7 +52,7 @@ function FloatingPaths({ position }: FloatingPathsProps) {
         duration: 20 + Math.random() * 10,
       };
     });
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setPaths(newPaths);
   }, [position]);
 

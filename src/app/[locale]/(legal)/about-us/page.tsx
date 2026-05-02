@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { ChevronRight, Github, GraduationCap, Shield, Sparkles } from "lucide-react";
+import { ChevronRight, GraduationCap, Shield, Sparkles } from "lucide-react";
 import Image from "next/image";
+import { GithubIcon } from "~/components/icons/github";
 import { JsonLd } from "~/components/JsonLd";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -215,7 +216,7 @@ export default function AboutUsPage() {
               <div className="pt-2">
                 <Button variant="outline" size="sm" asChild>
                   <a href="https://github.com/kirklin" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
-                    <Github className="mr-2 h-4 w-4" />
+                    <GithubIcon className="mr-2 h-4 w-4" />
                     GitHub
                   </a>
                 </Button>
@@ -250,7 +251,7 @@ export default function AboutUsPage() {
               rel="noopener noreferrer"
               className="text-primary hover:underline inline-flex items-center"
             >
-              <Github className="mr-1 h-4 w-4" />
+              <GithubIcon className="mr-1 h-4 w-4" />
               github.com/kirklin
             </a>
           </TypographyP>

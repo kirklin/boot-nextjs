@@ -245,10 +245,7 @@ export function CommitCopyButton({
         await navigator.clipboard.writeText(hash);
         setIsCopied(true);
         onCopy?.();
-        timeoutRef.current = window.setTimeout(
-          () => setIsCopied(false),
-          timeout,
-        );
+        timeoutRef.current = window.setTimeout(setIsCopied, timeout, false);
       }
     } catch (error) {
       onError?.(error as Error);
