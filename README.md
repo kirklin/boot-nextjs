@@ -1,38 +1,102 @@
+<div align="center">
+
+<img src="./public/banner.png" alt="Boot Next.js" width="100%" />
+
+<br />
+
+**English** | [简体中文](./README.zh-CN.md)
+
+</div>
+
+<br />
+
 # Boot Next.js
 
-This is a [Next.js](https://nextjs.org/) project
+A modern Next.js starter template built for ai SaaS applications.
+
+## Features
+
+- **Next.js 16** — App Router, Turbopack, Server Actions, React 19
+- **Authentication** — Secure auth with [Better Auth](https://www.better-auth.com/)
+- **Payments** — Stripe integration built-in
+- **Database** — PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/)
+- **AI SDK** — Vercel AI SDK for streaming LLM responses
+- **UI Components** — [shadcn/ui](https://ui.shadcn.com/) + Radix UI
+- **Internationalization** — [next-intl](https://next-intl.dev/) for multi-language support
+- **Type Safe** — End-to-end TypeScript + Zod validation
+- **Code Quality** — ESLint with [@kirklin/eslint-config](https://github.com/kirklin/eslint-config)
+- **Dark Mode** — next-themes with system preference detection
+
+## Tech Stack
+
+| Category   | Technology              |
+| ---------- | ----------------------- |
+| Framework  | Next.js 16, React 19    |
+| Language   | TypeScript 5.9          |
+| Styling    | Tailwind CSS 4          |
+| UI         | shadcn/ui, Radix UI     |
+| Database   | PostgreSQL, Drizzle ORM |
+| Auth       | Better Auth             |
+| Payments   | Stripe                  |
+| AI         | Vercel AI SDK           |
+| Validation | Zod                     |
+| i18n       | next-intl               |
+| Animation  | Framer Motion           |
+| Charts     | Recharts                |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js >= 18
+- pnpm >= 9
+- PostgreSQL
+
+### Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone https://github.com/kirklin/boot-nextjs.git
+cd boot-nextjs
+pnpm install
+cp .env.example .env
+pnpm drizzle-kit push
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+src/
+├── app/             # App Router pages & API routes
+│   ├── [locale]/    # i18n dynamic routes
+│   └── api/         # API routes
+├── components/      # Reusable UI components
+├── config/          # Application configuration
+├── data/            # Data layer & constants
+├── hooks/           # Custom React hooks
+├── lib/             # Utility libraries
+├── locales/         # i18n translation files
+└── styles/          # Global styles
+```
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command         | Description                     |
+| --------------- | ------------------------------- |
+| `pnpm dev`      | Start dev server with Turbopack |
+| `pnpm build`    | Build for production            |
+| `pnpm start`    | Start production server         |
+| `pnpm lint`     | Run ESLint                      |
+| `pnpm lint:fix` | Fix ESLint errors               |
+| `pnpm test`     | Run tests with Vitest           |
+| `pnpm ui`       | Add shadcn/ui components        |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Contributions are welcome. Please fork the repo, create a feature branch, and submit a PR.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[MIT](./LICENSE) © 2025-PRESENT [Kirk Lin](https://github.com/kirklin)
