@@ -5,6 +5,10 @@ import { auth } from "~/lib/auth/server";
 import { stripe } from "~/lib/stripe/server";
 
 export async function POST(req: Request) {
+  if (!auth) {
+    return NextResponse.json({ error: "Auth is not configured." }, { status: 503 });
+  }
+
   const session = await auth.api.getSession({ headers: await headers() }).catch(() => null);
 
   if (!session?.user) {

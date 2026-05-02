@@ -8,25 +8,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // TODO: Replace these placeholder entries with your actual site structure
   return [
     {
-      url: baseUrl, // Homepage
+      url: baseUrl,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`, // Example: About page
+      url: `${baseUrl}/about-us`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/[category-path]`, // Example: Category page placeholder
+      url: `${baseUrl}/pricing`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
     {
-      url: `${baseUrl}/[resource-path]`, // Example: Resource page placeholder
+      url: `${baseUrl}/showcase`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,

@@ -3,6 +3,9 @@ import { auth } from "~/lib/auth/server";
 import { stripe } from "~/lib/stripe/server";
 
 export async function GET(req: Request) {
+  if (!auth) {
+    return NextResponse.json({ error: "Auth is not configured." }, { status: 503 });
+  }
   if (!stripe) {
     return NextResponse.json({ error: "Stripe is not configured." }, { status: 500 });
   }

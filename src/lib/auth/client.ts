@@ -9,6 +9,6 @@ export const authClient = createAuthClient({
     stripeClient({
       subscription: true,
     }),
-    customSessionClient<typeof auth>(),
+    customSessionClient<NonNullable<typeof auth>>(),
   ],
 });

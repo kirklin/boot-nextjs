@@ -2,7 +2,7 @@
 
 import type { Subscription } from "@better-auth/stripe";
 import { ExternalLink } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DashboardShell } from "~/components/dashboard/dashboard-shell";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -74,7 +74,7 @@ export default function BillingPage() {
   };
 
   const currentPlan = subscription ? subscription.plan : "Free";
-  const nextBillingDate = subscription?.periodEnd ? new Date(subscription.periodEnd).toLocaleDateString() : "N/A";
+  const nextBillingDate = useMemo(() => subscription?.periodEnd ? new Date(subscription.periodEnd).toLocaleDateString() : "N/A", [subscription?.periodEnd]);
   const planDetails = subscription ? subscriptionPlans.find(p => p.name.toLowerCase() === subscription.plan.toLowerCase()) : null;
   const planPrice = planDetails ? `$${planDetails.price / 100}` : "$0";
 

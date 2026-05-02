@@ -175,8 +175,12 @@ export function CommitTimestamp({
   children,
   ...props
 }: CommitTimestampProps) {
+  const nowRef = useRef<number>(0);
+  if (nowRef.current === 0) {
+    nowRef.current = Date.now();
+  }
   const formatted = relativeTimeFormat.format(
-    Math.round((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
+    Math.round((date.getTime() - nowRef.current) / (1000 * 60 * 60 * 24)),
     "day",
   );
 

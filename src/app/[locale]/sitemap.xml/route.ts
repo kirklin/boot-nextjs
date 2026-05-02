@@ -2,6 +2,8 @@ import type { NextRequest } from "next/server";
 import { defaultLocale } from "~/lib/i18n/navigation";
 import { getBaseUrl } from "~/lib/url";
 
+const LEADING_SLASHES = /^\/+/;
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ locale: string }> },
@@ -19,7 +21,7 @@ export async function GET(
   // 为特定语言生成站点地图
   const sitemapEntries = routes.map((route) => {
     let url;
-    const path = route.path.replace(/^\/+/, "");
+    const path = route.path.replace(LEADING_SLASHES, "");
 
     if (isDefaultLocale) {
       // 默认语言路径

@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import * as React from "react";
 import Analytics from "~/components/Analytics";
 import { ThemeProvider } from "~/components/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
+import { inter } from "~/lib/fonts";
 import { routing } from "~/lib/i18n/navigation";
 import { getBaseUrl } from "~/lib/url";
 import { cn, createAlternates } from "~/lib/utils";
 import "~/styles/global.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 type Params = Promise<{ locale: string }>;
 

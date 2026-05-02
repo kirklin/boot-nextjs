@@ -2,7 +2,6 @@ import withNextIntl from "next-intl/plugin";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Your existing Next.js configuration options go here
   images: {
     remotePatterns: [
       {
@@ -11,6 +10,21 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  // Security headers
+  headers: async () => [
+    {
+      source: "/(.*)",
+      headers: [
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      ],
+    },
+  ],
+  // Optimize heavy package imports for faster dev & smaller bundles
+  experimental: {
+    optimizePackageImports: ["lucide-react", "recharts"],
   },
 };
 

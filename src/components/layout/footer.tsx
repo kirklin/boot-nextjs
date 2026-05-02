@@ -8,9 +8,10 @@ interface FooterProps {
   className?: string;
 }
 
+const currentYear = new Date().getFullYear();
+
 export function Footer({ className }: FooterProps) {
   const t = useTranslations("Footer");
-  const currentYear = new Date().getFullYear();
 
   const footerLinks = [
     {
