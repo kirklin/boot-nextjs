@@ -39,6 +39,7 @@ export async function generateMetadata({
 
 export default function AboutUsPage() {
   const organizationJsonLd = createOrganizationJsonLd();
+  // eslint-disable-next-line react/purity
   const lastUpdated = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

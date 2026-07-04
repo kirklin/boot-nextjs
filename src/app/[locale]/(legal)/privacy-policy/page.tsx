@@ -35,6 +35,7 @@ export async function generateMetadata({
 
 export default function PrivacyPolicyPage() {
   const websiteJsonLd = createWebsiteJsonLd();
+  // eslint-disable-next-line react/purity
   const lastUpdated = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

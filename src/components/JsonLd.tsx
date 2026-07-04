@@ -19,7 +19,7 @@ export function JsonLd({ data }: JsonLdProps) {
     <Script
       id="json-ld"
       type="application/ld+json"
-      // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
+      // eslint-disable-next-line react/dom-no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{ __html: jsonLdData }}
       strategy="afterInteractive"
     />
