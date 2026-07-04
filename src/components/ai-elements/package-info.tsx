@@ -1,7 +1,6 @@
 "use client";
 
 import type { HTMLAttributes } from "react";
-
 import { ArrowRightIcon, MinusIcon, PackageIcon, PlusIcon } from "lucide-react";
 import { createContext, use } from "react";
 import { Badge } from "~/components/ui/badge";
@@ -19,44 +18,6 @@ interface PackageInfoContextType {
 const PackageInfoContext = createContext<PackageInfoContextType>({
   name: "",
 });
-
-export type PackageInfoProps = HTMLAttributes<HTMLDivElement> & {
-  name: string;
-  currentVersion?: string;
-  newVersion?: string;
-  changeType?: ChangeType;
-};
-
-export function PackageInfo({
-  name,
-  currentVersion,
-  newVersion,
-  changeType,
-  className,
-  children,
-  ...props
-}: PackageInfoProps) {
-  return (
-    <PackageInfoContext
-      value={{ changeType, currentVersion, name, newVersion }}
-    >
-      <div
-        className={cn("rounded-lg border bg-background p-4", className)}
-        {...props}
-      >
-        {children ?? (
-          <>
-            <PackageInfoHeader>
-              <PackageInfoName />
-              {changeType && <PackageInfoChangeType />}
-            </PackageInfoHeader>
-            {(currentVersion || newVersion) && <PackageInfoVersion />}
-          </>
-        )}
-      </div>
-    </PackageInfoContext>
-  );
-}
 
 export type PackageInfoHeaderProps = HTMLAttributes<HTMLDivElement>;
 
@@ -171,6 +132,44 @@ export function PackageInfoVersion({
         </>
       )}
     </div>
+  );
+}
+
+export type PackageInfoProps = HTMLAttributes<HTMLDivElement> & {
+  name: string;
+  currentVersion?: string;
+  newVersion?: string;
+  changeType?: ChangeType;
+};
+
+export function PackageInfo({
+  name,
+  currentVersion,
+  newVersion,
+  changeType,
+  className,
+  children,
+  ...props
+}: PackageInfoProps) {
+  return (
+    <PackageInfoContext
+      value={{ changeType, currentVersion, name, newVersion }}
+    >
+      <div
+        className={cn("rounded-lg border bg-background p-4", className)}
+        {...props}
+      >
+        {children ?? (
+          <>
+            <PackageInfoHeader>
+              <PackageInfoName />
+              {changeType && <PackageInfoChangeType />}
+            </PackageInfoHeader>
+            {(currentVersion || newVersion) && <PackageInfoVersion />}
+          </>
+        )}
+      </div>
+    </PackageInfoContext>
   );
 }
 

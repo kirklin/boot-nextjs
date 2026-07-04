@@ -2,7 +2,6 @@
 
 import type { MotionProps } from "motion/react";
 import type { CSSProperties, ElementType, JSX } from "react";
-
 import { motion } from "motion/react";
 import { memo, useMemo } from "react";
 import { cn } from "~/lib/utils/index";
@@ -39,6 +38,7 @@ function ShimmerComponent({
   duration = 2,
   spread = 2,
 }: TextShimmerProps) {
+  // eslint-disable-next-line react/static-components
   const MotionComponent = getMotionComponent(
     Component as keyof JSX.IntrinsicElements,
   );
@@ -49,6 +49,7 @@ function ShimmerComponent({
   );
 
   return (
+    // eslint-disable-next-line react/static-components
     <MotionComponent
       animate={{ backgroundPosition: "0% center" }}
       className={cn(

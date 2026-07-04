@@ -1,7 +1,6 @@
 "use client";
 
 import type { ComponentProps } from "react";
-
 import { MicIcon, SquareIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -295,7 +294,7 @@ export function SpeechInput({
         && [0, 1, 2].map(index => (
           <div
             className="absolute inset-0 animate-ping rounded-full border-2 border-red-400/30"
-            key={`pulse-${index}`}
+            key={index}
             style={{
               animationDelay: `${index * 0.3}s`,
               animationDuration: "2s",

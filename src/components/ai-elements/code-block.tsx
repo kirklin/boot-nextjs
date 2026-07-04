@@ -7,7 +7,6 @@ import type {
   HighlighterGeneric,
   ThemedToken,
 } from "shiki";
-
 import { CheckIcon, CopyIcon } from "lucide-react";
 import {
   createContext,
@@ -31,11 +30,8 @@ import {
 import { cn } from "~/lib/utils/index";
 
 // Shiki uses bitflags for font styles: 1=italic, 2=bold, 4=underline
-// biome-ignore lint/suspicious/noBitwiseOperators: shiki bitflag check
-
+// oxlint-disable-next-line eslint(no-bitwise)
 const isItalic = (fontStyle: number | undefined) => fontStyle && fontStyle & 1;
-// biome-ignore lint/suspicious/noBitwiseOperators: shiki bitflag check
-
 // oxlint-disable-next-line eslint(no-bitwise)
 const isBold = (fontStyle: number | undefined) => fontStyle && fontStyle & 2;
 function isUnderline(fontStyle: number | undefined) {
@@ -96,6 +92,7 @@ const LINE_NUMBER_CLASSES = cn(
   "before:font-mono",
   "before:select-none",
 );
+
 // Line rendering component
 function LineSpan({
   keyedLine,
@@ -399,29 +396,40 @@ export function CodeBlockContent({
   // Memoized raw tokens for immediate display
   const rawTokens = useMemo(() => createRawTokens(code), [code]);
 
-  // Try to get cached result synchronously, otherwise use raw tokens
-  const [tokenized, setTokenized] = useState<TokenizedCode>(
+  // Synchronous cache lookup — avoids setState in effect for cached results
+  const syncTokens = useMemo(
     () => highlightCode(code, language) ?? rawTokens,
+    [code, language, rawTokens],
   );
+
+  // Async highlighting result (populated after shiki loads)
+  const [asyncTokens, setAsyncTokens] = useState<TokenizedCode | null>(null);
+  const asyncKeyRef = useRef({ code, language });
+
+  // Invalidate stale async tokens synchronously during render
+  if (
+    asyncKeyRef.current.code !== code
+    || asyncKeyRef.current.language !== language
+  ) {
+    asyncKeyRef.current = { code, language };
+    setAsyncTokens(null);
+  }
 
   useEffect(() => {
     let cancelled = false;
 
-    // Reset to raw tokens when code changes (shows current code, not stale tokens)
-    // eslint-disable-next-line react/set-state-in-effect
-    setTokenized(highlightCode(code, language) ?? rawTokens);
-
-    // Subscribe to async highlighting result
     highlightCode(code, language, (result) => {
       if (!cancelled) {
-        setTokenized(result);
+        setAsyncTokens(result);
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [code, language, rawTokens]);
+  }, [code, language]);
+
+  const tokenized = asyncTokens ?? syncTokens;
 
   return (
     <div className="relative overflow-auto">
@@ -445,7 +453,6 @@ export function CodeBlock({
       <CodeBlockContainer className={className} language={language} {...props}>
         {children}
         <CodeBlockContent
-          key={`${language}:${code}`} // Force remount to reset state when code changes
           code={code}
           language={language}
           showLineNumbers={showLineNumbers}

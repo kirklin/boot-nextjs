@@ -2,7 +2,6 @@
 
 import type { ComponentProps } from "react";
 import type { CarouselApi } from "~/components/ui/carousel";
-
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import {
   createContext,

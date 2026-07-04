@@ -2,7 +2,6 @@
 
 import type { ToolUIPart } from "ai";
 import type { ComponentProps } from "react";
-
 import { ChevronDownIcon, Code } from "lucide-react";
 import {
   Collapsible,

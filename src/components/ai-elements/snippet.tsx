@@ -1,7 +1,6 @@
 "use client";
 
 import type { ComponentProps } from "react";
-
 import { CheckIcon, CopyIcon } from "lucide-react";
 import {
   createContext,

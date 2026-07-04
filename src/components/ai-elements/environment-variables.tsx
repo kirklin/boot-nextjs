@@ -1,7 +1,6 @@
 "use client";
 
 import type { ComponentProps, HTMLAttributes } from "react";
-
 import { CheckIcon, CopyIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import {
   createContext,
@@ -157,42 +156,6 @@ const EnvironmentVariableContext
     value: "",
   });
 
-export type EnvironmentVariableProps = HTMLAttributes<HTMLDivElement> & {
-  name: string;
-  value: string;
-};
-
-export function EnvironmentVariable({
-  name,
-  value,
-  className,
-  children,
-  ...props
-}: EnvironmentVariableProps) {
-  const envVarContextValue = useMemo(() => ({ name, value }), [name, value]);
-
-  return (
-    <EnvironmentVariableContext value={envVarContextValue}>
-      <div
-        className={cn(
-          "flex items-center justify-between gap-4 px-4 py-3",
-          className,
-        )}
-        {...props}
-      >
-        {children ?? (
-          <>
-            <div className="flex items-center gap-2">
-              <EnvironmentVariableName />
-            </div>
-            <EnvironmentVariableValue />
-          </>
-        )}
-      </div>
-    </EnvironmentVariableContext>
-  );
-}
-
 export type EnvironmentVariableGroupProps = HTMLAttributes<HTMLDivElement>;
 
 export function EnvironmentVariableGroup({
@@ -248,6 +211,42 @@ export function EnvironmentVariableValue({
     >
       {children ?? displayValue}
     </span>
+  );
+}
+
+export type EnvironmentVariableProps = HTMLAttributes<HTMLDivElement> & {
+  name: string;
+  value: string;
+};
+
+export function EnvironmentVariable({
+  name,
+  value,
+  className,
+  children,
+  ...props
+}: EnvironmentVariableProps) {
+  const envVarContextValue = useMemo(() => ({ name, value }), [name, value]);
+
+  return (
+    <EnvironmentVariableContext value={envVarContextValue}>
+      <div
+        className={cn(
+          "flex items-center justify-between gap-4 px-4 py-3",
+          className,
+        )}
+        {...props}
+      >
+        {children ?? (
+          <>
+            <div className="flex items-center gap-2">
+              <EnvironmentVariableName />
+            </div>
+            <EnvironmentVariableValue />
+          </>
+        )}
+      </div>
+    </EnvironmentVariableContext>
   );
 }
 

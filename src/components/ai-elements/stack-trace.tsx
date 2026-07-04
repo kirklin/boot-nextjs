@@ -1,7 +1,6 @@
 "use client";
 
 import type { ComponentProps } from "react";
-
 import { useControllableState } from "@radix-ui/react-use-controllable-state";
 import {
   AlertTriangleIcon,
@@ -28,10 +27,10 @@ import {
 import { cn } from "~/lib/utils/index";
 
 // Regex patterns for parsing stack traces
-// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/no-misleading-capturing-group, regexp/optimal-quantifier-concatenation
-const STACK_FRAME_WITH_PARENS_REGEX = /^at\s+([^(]+)\s+\((.+):(\d+):(\d+)\)$/;
 // eslint-disable-next-line regexp/no-super-linear-backtracking
-const STACK_FRAME_WITHOUT_FN_REGEX = /^at\s+(.+?):(\d+):(\d+)$/;
+const STACK_FRAME_WITH_PARENS_REGEX = /^at\s+(.+?)\s+\((.+):(\d+):(\d+)\)$/;
+// eslint-disable-next-line regexp/no-super-linear-backtracking
+const STACK_FRAME_WITHOUT_FN_REGEX = /^at\s+(.+):(\d+):(\d+)$/;
 // eslint-disable-next-line regexp/no-super-linear-backtracking
 const ERROR_TYPE_REGEX = /^(\w+Error|Error):\s*(.*)$/;
 const AT_PREFIX_REGEX = /^at\s+/;
@@ -294,10 +293,6 @@ function handleActionsKeyDown(e: React.KeyboardEvent) {
 
 export const StackTraceActions = memo(
   ({ className, children, ...props }: StackTraceActionsProps) => (
-    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: stopPropagation required for nested interactions
-    // biome-ignore lint/a11y/useSemanticElements: fieldset doesn't fit this UI pattern
-    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: stopPropagation required for nested interactions
-    // biome-ignore lint/a11y/useSemanticElements: fieldset doesn't fit this UI pattern
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       className={cn("flex shrink-0 items-center gap-1", className)}
@@ -483,7 +478,7 @@ export const StackTraceFrames = memo(
 
     return (
       <div className={cn("space-y-1 p-3", className)} {...props}>
-        {framesToShow.map((frame, index) => (
+        {framesToShow.map(frame => (
           <div
             className={cn(
               "text-xs",
@@ -491,8 +486,7 @@ export const StackTraceFrames = memo(
                 ? "text-muted-foreground/50"
                 : "text-foreground/90",
             )}
-            // eslint-disable-next-line react/no-array-index-key
-            key={`${frame.raw}-${index}`}
+            key={frame.raw}
           >
             <span className="text-muted-foreground">at </span>
             {frame.functionName && (

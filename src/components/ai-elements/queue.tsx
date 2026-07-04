@@ -1,9 +1,7 @@
 "use client";
 
 import type { ComponentProps } from "react";
-
 import { ChevronDownIcon, PaperclipIcon } from "lucide-react";
-import NextImage from "next/image";
 import { Button } from "~/components/ui/button";
 import {
   Collapsible,
@@ -161,23 +159,15 @@ export type QueueItemImageProps = ComponentProps<"img">;
 
 export function QueueItemImage({
   className,
-  height = 32,
-  width = 32,
-  src,
   ...props
 }: QueueItemImageProps) {
-  if (!src || typeof src !== "string") {
-    return null;
-  }
-
   return (
-    <NextImage
+    // eslint-disable-next-line next/no-img-element
+    <img
       alt=""
       className={cn("h-8 w-8 rounded border object-cover", className)}
-      height={Number(height)}
-      src={src}
-      unoptimized
-      width={Number(width)}
+      height={32}
+      width={32}
       {...props}
     />
   );

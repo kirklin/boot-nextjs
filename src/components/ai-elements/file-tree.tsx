@@ -1,7 +1,6 @@
 "use client";
 
 import type { HTMLAttributes, ReactNode } from "react";
-
 import {
   ChevronRightIcon,
   FileIcon,
@@ -39,7 +38,7 @@ const FileTreeContext = createContext<FileTreeContextType>({
   togglePath: noop,
 });
 
-export type FileTreeProps = HTMLAttributes<HTMLDivElement> & {
+export type FileTreeProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
   expanded?: Set<string>;
   defaultExpanded?: Set<string>;
   selectedPath?: string;
@@ -95,6 +94,34 @@ export function FileTree({
   );
 }
 
+export type FileTreeIconProps = HTMLAttributes<HTMLSpanElement>;
+
+export function FileTreeIcon({
+  className,
+  children,
+  ...props
+}: FileTreeIconProps) {
+  return (
+    <span className={cn("shrink-0", className)} {...props}>
+      {children}
+    </span>
+  );
+}
+
+export type FileTreeNameProps = HTMLAttributes<HTMLSpanElement>;
+
+export function FileTreeName({
+  className,
+  children,
+  ...props
+}: FileTreeNameProps) {
+  return (
+    <span className={cn("truncate", className)} {...props}>
+      {children}
+    </span>
+  );
+}
+
 interface FileTreeFolderContextType {
   path: string;
   name: string;
@@ -147,21 +174,30 @@ export function FileTreeFolder({
           tabIndex={0}
           {...props}
         >
-          <CollapsibleTrigger asChild>
+          <div
+            className={cn(
+              "flex w-full items-center gap-1 rounded px-2 py-1 text-left transition-colors hover:bg-muted/50",
+              isSelected && "bg-muted",
+            )}
+          >
+            <CollapsibleTrigger asChild>
+              <button
+                className="flex shrink-0 cursor-pointer items-center border-none bg-transparent p-0"
+                type="button"
+              >
+                <ChevronRightIcon
+                  className={cn(
+                    "size-4 shrink-0 text-muted-foreground transition-transform",
+                    isExpanded && "rotate-90",
+                  )}
+                />
+              </button>
+            </CollapsibleTrigger>
             <button
-              className={cn(
-                "flex w-full items-center gap-1 rounded px-2 py-1 text-left transition-colors hover:bg-muted/50",
-                isSelected && "bg-muted",
-              )}
+              className="flex min-w-0 flex-1 cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-left"
               onClick={handleSelect}
               type="button"
             >
-              <ChevronRightIcon
-                className={cn(
-                  "size-4 shrink-0 text-muted-foreground transition-transform",
-                  isExpanded && "rotate-90",
-                )}
-              />
               <FileTreeIcon>
                 {isExpanded
                   ? (
@@ -173,7 +209,7 @@ export function FileTreeFolder({
               </FileTreeIcon>
               <FileTreeName>{name}</FileTreeName>
             </button>
-          </CollapsibleTrigger>
+          </div>
           <CollapsibleContent>
             <div className="ml-4 border-l pl-2">{children}</div>
           </CollapsibleContent>
@@ -243,7 +279,7 @@ export function FileTreeFile({
         {children ?? (
           <>
             {/* Spacer for alignment */}
-            <span className="size-4" />
+            <span className="size-4 shrink-0" />
             <FileTreeIcon>
               {icon ?? <FileIcon className="size-4 text-muted-foreground" />}
             </FileTreeIcon>
@@ -252,34 +288,6 @@ export function FileTreeFile({
         )}
       </div>
     </FileTreeFileContext>
-  );
-}
-
-export type FileTreeIconProps = HTMLAttributes<HTMLSpanElement>;
-
-export function FileTreeIcon({
-  className,
-  children,
-  ...props
-}: FileTreeIconProps) {
-  return (
-    <span className={cn("shrink-0", className)} {...props}>
-      {children}
-    </span>
-  );
-}
-
-export type FileTreeNameProps = HTMLAttributes<HTMLSpanElement>;
-
-export function FileTreeName({
-  className,
-  children,
-  ...props
-}: FileTreeNameProps) {
-  return (
-    <span className={cn("truncate", className)} {...props}>
-      {children}
-    </span>
   );
 }
 

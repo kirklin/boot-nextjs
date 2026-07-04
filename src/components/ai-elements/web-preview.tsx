@@ -1,7 +1,6 @@
 "use client";
 
 import type { ComponentProps, ReactNode } from "react";
-
 import { ChevronDownIcon } from "lucide-react";
 import {
   createContext,
@@ -204,7 +203,7 @@ export function WebPreviewBody({
       <iframe
         className={cn("size-full", className)}
         // oxlint-disable-next-line eslint-plugin-react(iframe-missing-sandbox)
-        // eslint-disable-next-line react-dom/no-unsafe-iframe-sandbox
+        // eslint-disable-next-line react/dom-no-unsafe-iframe-sandbox
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
         src={(src ?? url) || undefined}
         title="Preview"
@@ -264,7 +263,7 @@ export function WebPreviewConsole({
                 <p className="text-muted-foreground">No console output</p>
               )
             : (
-                logs.map((log, index) => (
+                logs.map(log => (
                   <div
                     className={cn(
                       "text-xs",
@@ -272,8 +271,7 @@ export function WebPreviewConsole({
                       log.level === "warn" && "text-yellow-600",
                       log.level === "log" && "text-foreground",
                     )}
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${log.timestamp.getTime()}-${index}`}
+                    key={`${log.timestamp.getTime()}-${log.level}-${log.message}`}
                   >
                     <span className="text-muted-foreground">
                       {log.timestamp.toLocaleTimeString()}

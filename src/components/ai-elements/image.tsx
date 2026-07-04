@@ -1,5 +1,4 @@
 import type { Experimental_GeneratedImage } from "ai";
-
 import { cn } from "~/lib/utils/index";
 
 export type ImageProps = Experimental_GeneratedImage & {

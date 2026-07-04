@@ -2,7 +2,6 @@
 
 import type { LanguageModelUsage } from "ai";
 import type { ComponentProps } from "react";
-
 import { createContext, use, useMemo } from "react";
 import { getUsage } from "tokenlens";
 import { Button } from "~/components/ui/button";
@@ -237,6 +236,32 @@ export function ContextContentFooter({
   );
 }
 
+function TokensWithCost({
+  tokens,
+  costText,
+}: {
+  tokens?: number;
+  costText?: string;
+}) {
+  return (
+    <span>
+      {tokens === undefined
+        ? "—"
+        : new Intl.NumberFormat("en-US", {
+            notation: "compact",
+          }).format(tokens)}
+      {costText
+        ? (
+            <span className="ml-2 text-muted-foreground">
+              •
+              {costText}
+            </span>
+          )
+        : null}
+    </span>
+  );
+}
+
 export type ContextInputUsageProps = ComponentProps<"div">;
 
 export function ContextInputUsage({
@@ -325,7 +350,7 @@ export function ContextReasoningUsage({
   ...props
 }: ContextReasoningUsageProps) {
   const { usage, modelId } = useContextValue();
-  const reasoningTokens = usage?.reasoningTokens ?? 0;
+  const reasoningTokens = usage?.outputTokenDetails?.reasoningTokens ?? 0;
 
   if (children) {
     return children;
@@ -365,7 +390,7 @@ export function ContextCacheUsage({
   ...props
 }: ContextCacheUsageProps) {
   const { usage, modelId } = useContextValue();
-  const cacheTokens = usage?.cachedInputTokens ?? 0;
+  const cacheTokens = usage?.inputTokenDetails?.cacheReadTokens ?? 0;
 
   if (children) {
     return children;
@@ -394,31 +419,5 @@ export function ContextCacheUsage({
       <span className="text-muted-foreground">Cache</span>
       <TokensWithCost costText={cacheCostText} tokens={cacheTokens} />
     </div>
-  );
-}
-
-function TokensWithCost({
-  tokens,
-  costText,
-}: {
-  tokens?: number;
-  costText?: string;
-}) {
-  return (
-    <span>
-      {tokens === undefined
-        ? "—"
-        : new Intl.NumberFormat("en-US", {
-            notation: "compact",
-          }).format(tokens)}
-      {costText
-        ? (
-            <span className="ml-2 text-muted-foreground">
-              •
-              {costText}
-            </span>
-          )
-        : null}
-    </span>
   );
 }

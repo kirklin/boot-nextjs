@@ -1,7 +1,6 @@
 "use client";
 
 import type { ComponentProps, HTMLAttributes } from "react";
-
 import {
   CheckIcon,
   CopyIcon,
@@ -169,20 +168,29 @@ const relativeTimeFormat = new Intl.RelativeTimeFormat("en", {
   numeric: "auto",
 });
 
+function formatRelativeDate(date: Date) {
+  const days = Math.round(
+    (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+  );
+  return relativeTimeFormat.format(days, "day");
+}
+
 export function CommitTimestamp({
   date,
   className,
   children,
   ...props
 }: CommitTimestampProps) {
-  const nowRef = useRef<number>(0);
-  if (nowRef.current === 0) {
-    nowRef.current = Date.now();
-  }
-  const formatted = relativeTimeFormat.format(
-    Math.round((date.getTime() - nowRef.current) / (1000 * 60 * 60 * 24)),
-    "day",
-  );
+  const [formatted, setFormatted] = useState("");
+
+  const updateFormatted = useCallback(() => {
+    // eslint-disable-next-line react/set-state-in-effect
+    setFormatted(formatRelativeDate(date));
+  }, [date]);
+
+  useEffect(() => {
+    updateFormatted();
+  }, [updateFormatted]);
 
   return (
     <time

@@ -2,7 +2,6 @@
 
 import type { RiveParameters } from "@rive-app/react-webgl2";
 import type { FC, ReactNode } from "react";
-
 import {
   useRive,
   useStateMachineInput,
@@ -12,6 +11,23 @@ import {
 } from "@rive-app/react-webgl2";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "~/lib/utils/index";
+
+// Delays Rive initialization by one frame so that React Strict Mode's
+// immediate unmount cycle never creates a WebGL2 context. Only the
+// second (real) mount will initialise, avoiding context exhaustion.
+function useStrictModeSafeInit() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setReady(true));
+    return () => {
+      cancelAnimationFrame(id);
+      setReady(false);
+    };
+  }, []);
+
+  return ready;
+}
 
 export type PersonaState
   = | "idle"
@@ -231,17 +247,26 @@ export const Persona: FC<PersonaProps> = memo(
       [],
     );
 
-    const { rive, RiveComponent } = useRive({
-      autoplay: true,
-      onLoad: stableCallbacks.onLoad,
-      onLoadError: stableCallbacks.onLoadError,
-      onPause: stableCallbacks.onPause,
-      onPlay: stableCallbacks.onPlay,
-      onRiveReady: stableCallbacks.onReady,
-      onStop: stableCallbacks.onStop,
-      src: source.source,
-      stateMachines: stateMachine,
-    });
+    // Delay initialisation by one frame to avoid creating (and leaking)
+    // a WebGL2 context during React Strict Mode's first throw-away mount.
+    const ready = useStrictModeSafeInit();
+
+    // eslint-disable-next-line react/static-components
+    const { rive, RiveComponent } = useRive(
+      ready
+        ? {
+            autoplay: true,
+            onLoad: stableCallbacks.onLoad,
+            onLoadError: stableCallbacks.onLoadError,
+            onPause: stableCallbacks.onPause,
+            onPlay: stableCallbacks.onPlay,
+            onRiveReady: stableCallbacks.onReady,
+            onStop: stableCallbacks.onStop,
+            src: source.source,
+            stateMachines: stateMachine,
+          }
+        : null,
+    );
 
     const listeningInput = useStateMachineInput(
       rive,
@@ -252,6 +277,8 @@ export const Persona: FC<PersonaProps> = memo(
     const speakingInput = useStateMachineInput(rive, stateMachine, "speaking");
     const asleepInput = useStateMachineInput(rive, stateMachine, "asleep");
 
+    // Rive state machine inputs are mutable objects that must be set via direct
+    // property assignment — this is the intended Rive API, not a React anti-pattern.
     useEffect(() => {
       if (listeningInput) {
         listeningInput.value = state === "listening";
@@ -271,6 +298,7 @@ export const Persona: FC<PersonaProps> = memo(
 
     return (
       <Component rive={rive} source={source}>
+        {/* eslint-disable-next-line react/static-components */}
         <RiveComponent className={cn("size-16 shrink-0", className)} />
       </Component>
     );
