@@ -70,6 +70,30 @@ pnpm dev
 
 在浏览器中打开 [http://localhost:3000](http://localhost:3000) 即可查看。
 
+## 支付（Stripe）
+
+支付体系基于 [Stripe Checkout](https://docs.stripe.com/payments/checkout) 和 [`@better-auth/stripe`](https://better-auth.com/docs/plugins/stripe) 插件构建——订阅、账单门户（Billing Portal）、一次性支付和 Webhook 均已预置。
+
+### 配置步骤
+
+1. **API 密钥** — 在 [Stripe Dashboard](https://dashboard.stripe.com/apikeys) 获取并设置 `STRIPE_SECRET_KEY`。
+2. **Webhook** — 创建指向 `https://<你的域名>/api/auth/stripe/webhook` 的 Webhook 端点，订阅 `checkout.session.*` 和 `customer.subscription.*` 事件，并设置 `STRIPE_WEBHOOK_SECRET`。本地开发使用：
+
+   ```bash
+   stripe listen --forward-to localhost:3000/api/auth/stripe/webhook
+   ```
+
+3. **价格** — 在 Dashboard 的产品目录中创建产品，并设置 `STRIPE_PRICE_*` 环境变量（参见 `.env.example`）。套餐展示信息位于 `src/lib/stripe/plans.ts`，价格 ID 映射位于 `src/lib/stripe/plans.server.ts`。
+4. **支付方式** — 在 [Dashboard → Payment methods](https://dashboard.stripe.com/settings/payment_methods) 中启用银行卡、钱包、支付宝、微信支付、Link 等。Checkout 会自动向用户展示所有已启用且匹配币种和地区的支付方式，无需改动代码。
+
+### 内置能力
+
+- **订阅** — 结账、套餐变更（通过账单门户确认）、取消/恢复、发票历史；订阅状态由插件的 Webhook 处理器同步到 `subscription` 表。
+- **一次性支付** — 调用 `POST /api/stripe/checkout` 并传入 `src/lib/stripe/products.ts` 中的商品 key（`mode: "payment"`，支持不能用于订阅的支付方式，如微信支付）。支付完成后记录到 `payment` 表，异步支付方式（银行转账等）也会正确处理。
+- **可选预设** — 免费试用（`plans.ts` 中的 `freeTrialDays`）和年付价格（`STRIPE_PRICE_*_ANNUAL`，配合插件的 `annual` 升级参数使用）。
+
+测试模式下可使用 [测试卡号](https://docs.stripe.com/testing)（如 `4242 4242 4242 4242`）。
+
 ## 项目结构
 
 ```

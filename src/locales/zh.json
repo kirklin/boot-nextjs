@@ -74,5 +74,86 @@
         "github": "GitHub"
       }
     }
+  },
+  "Pricing": {
+    "perMonth": "/月",
+    "recommended": "推荐",
+    "currentPlan": "当前套餐",
+    "upgrade": "升级",
+    "choosePlan": "选择套餐",
+    "redirecting": "跳转中...",
+    "freeTrial": "{days} 天免费试用",
+    "checkoutError": "无法发起支付，请稍后重试。",
+    "subscriptionLoadError": "无法加载您的订阅信息。",
+    "plans": {
+      "supporter": {
+        "description": "适合独立开发者和爱好者。",
+        "features": [
+          "访问所有核心功能",
+          "社区支持",
+          "社区专属徽章",
+          "支持者名单展示"
+        ]
+      },
+      "professional": {
+        "description": "适合职业开发者和小型团队。",
+        "features": [
+          "包含 Supporter 全部功能",
+          "优先支持",
+          "抢先体验新功能"
+        ]
+      },
+      "partner": {
+        "description": "适合企业和商业机构。",
+        "features": [
+          "包含 Professional 全部功能",
+          "专属沟通渠道",
+          "首页展示您的 Logo",
+          "定制功能优先级"
+        ]
+      }
+    }
+  },
+  "Billing": {
+    "title": "账单与发票",
+    "loading": "正在加载账单信息...",
+    "currentPlanTitle": "当前套餐",
+    "currentPlanDescription": "您当前使用的是 {plan} 套餐。",
+    "freePlan": "免费",
+    "planSuffix": "套餐",
+    "manageSubscription": "管理订阅",
+    "portalError": "无法打开账单门户，请稍后重试。",
+    "nextBillingDate": "下次扣费日期：{date}",
+    "cancelNotice": "您的订阅将于 {date} 到期结束。",
+    "resume": "恢复订阅",
+    "resumeError": "无法恢复订阅，请稍后重试。",
+    "resumeSuccess": "您的订阅已恢复。",
+    "projects": "{count} 个项目",
+    "unlimitedProjects": "无限项目",
+    "recentInvoices": "最近发票",
+    "noInvoices": "暂无发票。",
+    "invoicesError": "无法加载发票。",
+    "viewAllInvoices": "查看全部发票",
+    "billingQuestions": "如有账单问题，请<link>联系客服</link>。",
+    "perMonth": "/月"
+  },
+  "PaymentResult": {
+    "loadingTitle": "正在加载支付结果",
+    "loadingDescription": "请稍候，正在获取您的支付详情",
+    "successTitle": "支付成功",
+    "successDescription": "您的订单已成功处理",
+    "processingTitle": "支付处理中",
+    "processingDescription": "您的付款正在处理中，请稍后查看",
+    "errorTitle": "获取结果失败",
+    "errorDescription": "无法获取支付详情，请稍后重试",
+    "invalidSession": "无效的会话 ID",
+    "fetchError": "获取支付结果失败",
+    "amount": "金额",
+    "transactionTime": "交易时间",
+    "sessionId": "会话 ID",
+    "transactionComplete": "交易完成",
+    "statusLabel": "状态：{status}",
+    "backToHome": "返回首页",
+    "viewReceipt": "查看凭证"
   }
 }

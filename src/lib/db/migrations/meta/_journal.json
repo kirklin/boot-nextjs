@@ -15,6 +15,13 @@
       "when": 1750439970956,
       "tag": "0001_sudden_jackal",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783186694347,
+      "tag": "0002_regular_golden_guardian",
+      "breakpoints": true
     }
   ]
 }

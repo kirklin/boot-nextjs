@@ -1,52 +1,72 @@
-export const subscriptionPlans = [
+/**
+ * Subscription plan display metadata, safe to import from client components.
+ * Copy (description/features) lives in the locale files under `Pricing.plans.<key>`.
+ * Stripe price IDs are server-only and attached in ./plans.server.ts.
+ */
+export interface SubscriptionPlan {
+  /** Stable identifier used for translation keys. */
+  key: string;
+  /** Plan name registered with the better-auth Stripe plugin (matched case-insensitively). */
+  name: string;
+  /** Display price in the smallest currency unit (e.g. cents). */
+  price: number;
+  /** ISO currency code for the display price. */
+  currency: string;
+  buttonVariant: "default" | "outline";
+  popular: boolean;
+  freeTrialDays?: number;
+  limits: {
+    projects: number;
+  };
+}
+
+export const subscriptionPlans: SubscriptionPlan[] = [
   {
+    key: "supporter",
     name: "Supporter",
-    priceId: "price_1Rc9G1PthsRl3XNksFERHQkW",
-    price: 900, // in cents
-    description: "For individual developers and hobbyists.",
-    features: [
-      "Access to all core features",
-      "Community support",
-      "Special badge in the community",
-      "Name on the supporters list",
-    ],
-    buttonVariant: "outline" as const,
+    price: 900,
+    currency: "usd",
+    buttonVariant: "outline",
     popular: false,
     limits: {
       projects: 1,
     },
   },
   {
+    key: "professional",
     name: "Professional",
-    priceId: "price_1Rc9G1PthsRl3XNkjdbbCOle",
     price: 2900,
-    description: "For professional developers and small teams.",
-    features: [
-      "All Supporter features",
-      "Priority support",
-      "Early access to new features",
-    ],
-    buttonVariant: "default" as const,
+    currency: "usd",
+    buttonVariant: "default",
     popular: true,
     limits: {
       projects: 5,
     },
   },
   {
+    key: "partner",
     name: "Partner",
-    priceId: "price_1Rc9G1PthsRl3XNkMxgFOUmF",
     price: 9900,
-    description: "For businesses and enterprises.",
-    features: [
-      "All Professional features",
-      "Direct communication channel",
-      "Logo on our homepage",
-      "Custom feature prioritization",
-    ],
-    buttonVariant: "outline" as const,
+    currency: "usd",
+    buttonVariant: "outline",
     popular: false,
     limits: {
       projects: -1, // -1 means unlimited
     },
   },
 ];
+
+/**
+ * The better-auth Stripe plugin stores plan names lowercased, so lookups
+ * must always be case-insensitive.
+ */
+export function findPlanByName(name: string | null | undefined): SubscriptionPlan | undefined {
+  if (!name) {
+    return undefined;
+  }
+  return subscriptionPlans.find(plan => plan.name.toLowerCase() === name.toLowerCase());
+}
+
+export function isSamePlan(a: string | null | undefined, b: string | null | undefined): boolean {
+  return !!a && !!b && a.toLowerCase() === b.toLowerCase();
+}

@@ -74,5 +74,86 @@
         "github": "GitHub"
       }
     }
+  },
+  "Pricing": {
+    "perMonth": "/month",
+    "recommended": "Recommended",
+    "currentPlan": "Current Plan",
+    "upgrade": "Upgrade",
+    "choosePlan": "Choose Plan",
+    "redirecting": "Redirecting...",
+    "freeTrial": "{days}-day free trial",
+    "checkoutError": "Could not start checkout. Please try again.",
+    "subscriptionLoadError": "Could not load your subscription.",
+    "plans": {
+      "supporter": {
+        "description": "For individual developers and hobbyists.",
+        "features": [
+          "Access to all core features",
+          "Community support",
+          "Special badge in the community",
+          "Name on the supporters list"
+        ]
+      },
+      "professional": {
+        "description": "For professional developers and small teams.",
+        "features": [
+          "All Supporter features",
+          "Priority support",
+          "Early access to new features"
+        ]
+      },
+      "partner": {
+        "description": "For businesses and enterprises.",
+        "features": [
+          "All Professional features",
+          "Direct communication channel",
+          "Logo on our homepage",
+          "Custom feature prioritization"
+        ]
+      }
+    }
+  },
+  "Billing": {
+    "title": "Billing & Invoices",
+    "loading": "Loading billing information...",
+    "currentPlanTitle": "Current Plan",
+    "currentPlanDescription": "You are currently on the {plan} plan.",
+    "freePlan": "Free",
+    "planSuffix": "Plan",
+    "manageSubscription": "Manage Subscription",
+    "portalError": "Could not open the billing portal. Please try again.",
+    "nextBillingDate": "Next billing date: {date}",
+    "cancelNotice": "Your subscription ends on {date}.",
+    "resume": "Resume Subscription",
+    "resumeError": "Could not resume the subscription. Please try again.",
+    "resumeSuccess": "Your subscription has been resumed.",
+    "projects": "{count, plural, one {# project} other {# projects}}",
+    "unlimitedProjects": "Unlimited projects",
+    "recentInvoices": "Recent Invoices",
+    "noInvoices": "No invoices yet.",
+    "invoicesError": "Could not load invoices.",
+    "viewAllInvoices": "View All Invoices",
+    "billingQuestions": "For billing questions, please <link>contact support</link>.",
+    "perMonth": "/month"
+  },
+  "PaymentResult": {
+    "loadingTitle": "Loading Payment Result",
+    "loadingDescription": "Please wait while we retrieve your payment details",
+    "successTitle": "Payment Successful",
+    "successDescription": "Your order has been successfully processed",
+    "processingTitle": "Payment Processing",
+    "processingDescription": "Your payment is being processed, please check back later",
+    "errorTitle": "Failed to Retrieve Result",
+    "errorDescription": "Unable to retrieve payment details, please try again later",
+    "invalidSession": "Invalid session ID",
+    "fetchError": "Failed to fetch payment result",
+    "amount": "Amount",
+    "transactionTime": "Transaction Time",
+    "sessionId": "Session ID",
+    "transactionComplete": "Transaction Complete",
+    "statusLabel": "Status: {status}",
+    "backToHome": "Back to Home",
+    "viewReceipt": "View Receipt"
   }
 }

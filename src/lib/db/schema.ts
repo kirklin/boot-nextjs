@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, integer, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -64,7 +64,32 @@ export const subscription = pgTable("subscription", {
   periodStart: timestamp("period_start"),
   periodEnd: timestamp("period_end"),
   cancelAtPeriodEnd: boolean("cancel_at_period_end"),
+  cancelAt: timestamp("cancel_at"),
+  canceledAt: timestamp("canceled_at"),
+  endedAt: timestamp("ended_at"),
   seats: integer("seats"),
+  billingInterval: text("billing_interval"),
+  stripeScheduleId: text("stripe_schedule_id"),
+  limits: jsonb("limits"),
   trialStart: timestamp("trial_start"),
   trialEnd: timestamp("trial_end"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// One-time purchases recorded from Checkout (mode: "payment") webhook events.
+// Subscriptions live in the `subscription` table managed by @better-auth/stripe.
+export const payment = pgTable("payment", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeCheckoutSessionId: text("stripe_checkout_session_id").notNull().unique(),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  productKey: text("product_key"),
+  amountTotal: integer("amount_total"),
+  currency: text("currency"),
+  // Stripe checkout payment_status: "paid" | "unpaid" (async methods) — plus "failed"/"refunded" set by webhooks.
+  status: text("status").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

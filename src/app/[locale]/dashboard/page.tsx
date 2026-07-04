@@ -2,18 +2,23 @@
 
 import type { Subscription } from "@better-auth/stripe";
 import { CheckCircle2, Circle } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { DashboardShell } from "~/components/dashboard/dashboard-shell";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { authClient } from "~/lib/auth/client";
-import { subscriptionPlans } from "~/lib/stripe/plans";
+import { formatStripeAmount } from "~/lib/stripe/format";
+import { findPlanByName, isSamePlan, subscriptionPlans } from "~/lib/stripe/plans";
 
 export default function DashboardPage() {
+  const t = useTranslations("Pricing");
+  const locale = useLocale();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchSubscription() {
@@ -31,23 +36,30 @@ export default function DashboardPage() {
   }, []);
 
   const handleUpgrade = async (plan: (typeof subscriptionPlans)[number]) => {
-    setIsCheckoutLoading(true);
+    setLoadingPlan(plan.name);
     try {
-      await authClient.subscription.upgrade({
+      const { error } = await authClient.subscription.upgrade({
         plan: plan.name,
-        successUrl: `${window.location.origin}/dashboard/billing`,
-        cancelUrl: window.location.href,
-        ...(subscription && { subscriptionId: subscription.id }),
+        successUrl: "/dashboard/billing",
+        cancelUrl: "/dashboard",
+        returnUrl: "/dashboard/billing",
+        ...(subscription?.stripeSubscriptionId && {
+          subscriptionId: subscription.stripeSubscriptionId,
+        }),
       });
+      if (error) {
+        toast.error(error.message ?? t("checkoutError"));
+      }
     } catch (error) {
       console.error("Error during upgrade:", error);
+      toast.error(t("checkoutError"));
     } finally {
-      setIsCheckoutLoading(false);
+      setLoadingPlan(null);
     }
   };
 
   const currentPlanName = subscription?.plan || "Free";
-  const currentPlanDetails = subscriptionPlans.find(p => p.name.toLowerCase() === currentPlanName.toLowerCase());
+  const currentPlanDetails = findPlanByName(currentPlanName);
 
   const usageStats = {
     used: 764, // This should be fetched from a relevant API
@@ -64,72 +76,74 @@ export default function DashboardPage() {
 
         {/* Subscription Plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {subscriptionPlans.map(plan => (
-            <Card
-              key={plan.name}
-              className={`flex flex-col ${plan.name.toLowerCase() === currentPlanName.toLowerCase() ? "border-primary" : ""}`}
-            >
-              <CardHeader>
-                <div className="flex justify-between items-center mb-2">
-                  <CardTitle className="text-lg">{plan.name}</CardTitle>
-                  {plan.name.toLowerCase() === currentPlanName.toLowerCase() && (
-                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                      Active
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-baseline">
-                  <span className="text-2xl font-bold">
-                    $
-                    {plan.price / 100}
-                  </span>
-                  <span className="text-muted-foreground ml-1">/month</span>
-                </div>
-                <CardDescription>{plan.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <ul className="space-y-2">
-                  {plan.features.map(feature => (
-                    <li key={feature} className="flex items-start">
-                      {plan.name.toLowerCase() === currentPlanName.toLowerCase()
-                        ? (
-                            <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mr-2 mt-0.5" />
-                          )
-                        : (
-                            <Circle className="h-4 w-4 shrink-0 mr-2 mt-0.5" />
-                          )}
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
-                {plan.name.toLowerCase() === currentPlanName.toLowerCase()
-                  ? (
-                      <Button variant="outline" className="w-full" disabled>
-                        Current Plan
-                      </Button>
-                    )
-                  : (
-                      <Button
-                        variant="default"
-                        className="w-full"
-                        onClick={() => handleUpgrade(plan)}
-                        disabled={
-                          isCheckoutLoading
-                          || (currentPlanDetails && plan.price < currentPlanDetails.price)
-                        }
-                      >
-                        {isCheckoutLoading
-                          ? "Redirecting..."
-                          : currentPlanName === "Free"
-                            ? "Choose Plan"
-                            : "Upgrade"}
-                      </Button>
+          {subscriptionPlans.map((plan) => {
+            const isCurrent = isSamePlan(plan.name, currentPlanName);
+            return (
+              <Card
+                key={plan.name}
+                className={`flex flex-col ${isCurrent ? "border-primary" : ""}`}
+              >
+                <CardHeader>
+                  <div className="flex justify-between items-center mb-2">
+                    <CardTitle className="text-lg">{plan.name}</CardTitle>
+                    {isCurrent && (
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                        Active
+                      </span>
                     )}
-              </CardFooter>
-            </Card>
-          ))}
+                  </div>
+                  <div className="flex items-baseline">
+                    <span className="text-2xl font-bold">
+                      {formatStripeAmount(plan.price, plan.currency, locale)}
+                    </span>
+                    <span className="text-muted-foreground ml-1">{t("perMonth")}</span>
+                  </div>
+                  <CardDescription>{t(`plans.${plan.key}.description`)}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <ul className="space-y-2">
+                    {(t.raw(`plans.${plan.key}.features`) as string[]).map(feature => (
+                      <li key={feature} className="flex items-start">
+                        {isCurrent
+                          ? (
+                              <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mr-2 mt-0.5" />
+                            )
+                          : (
+                              <Circle className="h-4 w-4 shrink-0 mr-2 mt-0.5" />
+                            )}
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  {isCurrent
+                    ? (
+                        <Button variant="outline" className="w-full" disabled>
+                          {t("currentPlan")}
+                        </Button>
+                      )
+                    : (
+                        <Button
+                          variant="default"
+                          className="w-full"
+                          onClick={() => handleUpgrade(plan)}
+                          disabled={
+                            loadingPlan !== null
+                            || (currentPlanDetails && plan.price < currentPlanDetails.price)
+                          }
+                        >
+                          {loadingPlan === plan.name
+                            ? t("redirecting")
+                            : subscription
+                              ? t("upgrade")
+                              : t("choosePlan")}
+                        </Button>
+                      )}
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
 
         <Tabs defaultValue="overview" className="w-full">

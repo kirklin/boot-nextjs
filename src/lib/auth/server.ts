@@ -1,5 +1,6 @@
 import type { BetterAuthOptions, BetterAuthPlugin } from "better-auth";
 import { stripe } from "@better-auth/stripe";
+import { logger } from "@kirklin/logger";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -7,8 +8,9 @@ import { customSession, jwt } from "better-auth/plugins";
 import { env } from "~/config/server";
 import { db } from "~/lib/db";
 import { account, jwks, session, subscription, user, verification } from "~/lib/db/schema";
-import { subscriptionPlans } from "~/lib/stripe/plans";
+import { getStripePlans } from "~/lib/stripe/plans.server";
 import { stripe as stripeClient } from "~/lib/stripe/server";
+import { handleStripeEvent } from "~/lib/stripe/webhook";
 import { getBaseUrl } from "~/lib/url";
 
 function createAuth() {
@@ -38,17 +40,34 @@ function createAuth() {
   const basePlugins: BetterAuthPlugin[] = [nextCookies(), jwt()];
 
   if (stripeClient && env.STRIPE_WEBHOOK_SECRET) {
+    const plans = getStripePlans();
+    if (plans.length === 0) {
+      logger.warn("[stripe] No subscription plans configured — set the STRIPE_PRICE_* environment variables to enable checkout.");
+    }
     basePlugins.push(
       stripe({
         stripeClient,
         stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
         createCustomerOnSignUp: true,
+        // Handles events outside the plugin's scope (one-time payments, ...).
+        onEvent: handleStripeEvent,
         subscription: {
           enabled: true,
-          plans: subscriptionPlans,
+          plans,
+          // The plugin never restricts payment_method_types, so every payment
+          // method enabled in the Stripe Dashboard is offered automatically.
+          // Extra Checkout Session params can be added here.
+          getCheckoutSessionParams: () => ({
+            params: {
+              allow_promotion_codes: true,
+              billing_address_collection: "auto",
+            },
+          }),
         },
       }),
     );
+  } else if (stripeClient || env.STRIPE_WEBHOOK_SECRET) {
+    logger.warn("[stripe] Partial Stripe configuration — set both STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET to enable billing. Stripe features are disabled.");
   }
 
   const authOptions = {

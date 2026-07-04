@@ -1,59 +1,74 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-
+import { auth } from "~/lib/auth/server";
 import { stripe } from "~/lib/stripe/server";
 
+// Returns the outcome of a Checkout Session for the payment-result page.
+// Amounts and dates are returned raw so the client can format them for the
+// active locale. Only the session's owner can read it.
+
 export async function GET(req: Request) {
+  if (!auth) {
+    return NextResponse.json({ error: "Auth is not configured." }, { status: 503 });
+  }
   if (!stripe) {
-    return NextResponse.json({ error: "Stripe is not configured." }, { status: 500 });
+    return NextResponse.json({ error: "Stripe is not configured." }, { status: 503 });
+  }
+
+  const session = await auth.api.getSession({ headers: await headers() }).catch(() => null);
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(req.url);
   const sessionId = url.searchParams.get("session_id");
-
-  if (!sessionId) {
-    return NextResponse.json({ error: "Missing session_id parameter" }, { status: 400 });
+  if (!sessionId || !sessionId.startsWith("cs_")) {
+    return NextResponse.json({ error: "Missing or invalid session_id parameter" }, { status: 400 });
   }
 
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["line_items", "customer", "subscription", "payment_intent.latest_charge"],
+    const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["payment_intent.latest_charge", "invoice"],
     });
 
-    const paymentIntent = session.payment_intent;
-    const charge
-      = paymentIntent && typeof paymentIntent !== "string"
-        ? (paymentIntent.latest_charge as Stripe.Charge | null)
-        : null;
+    // Ownership: sessions created by this app carry server-set userId metadata
+    // (both the one-time checkout route and the better-auth plugin set it);
+    // fall back to the Stripe customer linked to the current user. Don't trust
+    // client_reference_id — it is payer-controlled on Payment Links.
+    const customerId = typeof checkoutSession.customer === "string"
+      ? checkoutSession.customer
+      : checkoutSession.customer?.id;
+    const isOwner = checkoutSession.metadata?.userId === session.user.id
+      || (!!session.user.stripeCustomerId && customerId === session.user.stripeCustomerId);
+    if (!isOwner) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
 
-    // 格式化日期和时间
-    const createdAt = new Date(session.created * 1000);
-    const date = createdAt.toLocaleDateString();
-    const time = createdAt.toLocaleTimeString();
+    // In "payment" mode the charge (and receipt) hangs off the payment intent;
+    // in "subscription" mode the payment lands on the invoice instead.
+    const paymentIntent = typeof checkoutSession.payment_intent === "string" ? null : checkoutSession.payment_intent;
+    const charge = paymentIntent?.latest_charge && typeof paymentIntent.latest_charge !== "string"
+      ? paymentIntent.latest_charge
+      : null;
+    const invoice = typeof checkoutSession.invoice === "string" ? null : checkoutSession.invoice;
+    const receiptUrl = charge?.receipt_url ?? invoice?.hosted_invoice_url ?? null;
 
-    // 构建响应数据
-    const result = {
-      success: session.payment_status === "paid",
-      orderId: session.id.substring(0, 8).toUpperCase(),
-      amount: new Intl.NumberFormat("zh-CN", {
-        style: "currency",
-        currency: session.currency?.toUpperCase() || "CNY",
-      }).format((session.amount_total || 0) / 100),
-      date,
-      time,
-      status: session.payment_status,
-      customer: (session.customer as Stripe.Customer)?.email || null,
-      paymentMethod: charge?.payment_method_details?.type || null,
-      subscriptionStatus: (session.subscription as Stripe.Subscription)?.status || null,
-      receiptUrl: charge?.receipt_url,
-    };
-
-    return NextResponse.json(result);
+    return NextResponse.json({
+      status: checkoutSession.status,
+      paymentStatus: checkoutSession.payment_status,
+      mode: checkoutSession.mode,
+      amountTotal: checkoutSession.amount_total,
+      currency: checkoutSession.currency,
+      createdAt: new Date(checkoutSession.created * 1000).toISOString(),
+      customerEmail: checkoutSession.customer_details?.email ?? null,
+      paymentMethod: charge?.payment_method_details?.type ?? null,
+      receiptUrl,
+    });
   } catch (err) {
     console.error("Error retrieving payment result:", err);
-    if (err instanceof Stripe.errors.StripeError) {
-      const { message, type } = err;
-      return NextResponse.json({ error: { message, type } }, { status: 500 });
+    if (err instanceof Stripe.errors.StripeError && err.type === "StripeInvalidRequestError") {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
     return NextResponse.json({ error: "Failed to retrieve payment information" }, { status: 500 });
   }
