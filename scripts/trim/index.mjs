@@ -611,6 +611,13 @@ if (!removingApp && features.some(f => f.regenerateMigrations)) {
 }
 
 log("\n[cleanup]");
+// Generated route types under .next reference the deleted pages and would
+// fail the type check below; they are rebuilt on the next dev/build.
+log("  - delete .next and tsconfig.tsbuildinfo (stale generated types)");
+if (!dryRun) {
+  fs.rmSync(path.join(ROOT, ".next"), { recursive: true, force: true });
+  fs.rmSync(path.join(ROOT, "tsconfig.tsbuildinfo"), { force: true });
+}
 removeTrimTool();
 run("pnpm install");
 if (!removingApp && features.some(f => f.regenerateMigrations)) {
