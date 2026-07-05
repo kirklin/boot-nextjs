@@ -81,6 +81,20 @@ If port 5432 is already in use, set `POSTGRES_PORT=5433` in `.env` and update `D
 
 To test Stripe webhooks locally, run `pnpm stripe:listen` (Dockerized Stripe CLI; requires `STRIPE_SECRET_KEY` in `.env`) and copy the printed `whsec_...` into `STRIPE_WEBHOOK_SECRET`.
 
+### Trim the template
+
+Don't need everything? Right after cloning, run:
+
+```bash
+pnpm trim
+```
+
+Interactive prompts let you drop features; the tool deletes the code, removes the dependencies, cleans env/config/locales, regenerates migrations where needed, and verifies the result with ESLint + TypeScript before removing itself.
+
+- `pnpm trim --preset no-payments` — keep auth + dashboard, remove Stripe
+- `pnpm trim --preset landing` — marketing site only (no payments, auth, or database)
+- add `--dry-run` to preview the changes
+
 ## Internationalization & SEO
 
 Locale routing is controlled by **one line** in [`src/lib/i18n/navigation.ts`](src/lib/i18n/navigation.ts):

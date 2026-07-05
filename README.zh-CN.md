@@ -86,6 +86,20 @@ pnpm dev
 
 本地测试 Stripe Webhook：运行 `pnpm stripe:listen`（Docker 化的 Stripe CLI，需要 `.env` 中的 `STRIPE_SECRET_KEY`），并把输出的 `whsec_...` 填入 `STRIPE_WEBHOOK_SECRET`。
 
+### 按需精简模板
+
+不需要全部功能？clone 后立即运行：
+
+```bash
+pnpm trim
+```
+
+交互式选择要移除的功能；工具会删除对应代码、清理依赖、环境变量、配置和翻译文案，必要时重新生成数据库迁移，并用 ESLint + TypeScript 验证结果，最后自我删除。
+
+- `pnpm trim --preset no-payments` — 保留登录和后台，移除 Stripe 支付
+- `pnpm trim --preset landing` — 纯展示站（移除支付、登录、数据库）
+- 加 `--dry-run` 可预览将发生的变更
+
 ## 国际化与 SEO
 
 语言路由策略由 [`src/lib/i18n/navigation.ts`](src/lib/i18n/navigation.ts) 中的**一行代码**控制：
