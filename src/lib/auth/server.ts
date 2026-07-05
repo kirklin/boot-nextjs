@@ -37,7 +37,7 @@ function createAuth() {
     };
   }
 
-  const basePlugins: BetterAuthPlugin[] = [nextCookies(), jwt()];
+  const basePlugins: BetterAuthPlugin[] = [jwt()];
 
   if (stripeClient && env.STRIPE_WEBHOOK_SECRET) {
     const plans = getStripePlans();
@@ -103,6 +103,8 @@ function createAuth() {
           user: authUser as typeof authUser & { stripeCustomerId?: string | null },
         };
       }, authOptions),
+      // Must stay last so cookies set by earlier plugins' hooks reach Next.js.
+      nextCookies(),
     ],
   });
 }
