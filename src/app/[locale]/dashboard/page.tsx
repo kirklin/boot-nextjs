@@ -1,24 +1,23 @@
 "use client";
 
 import type { Subscription } from "@better-auth/stripe";
-import { CheckCircle2, Circle } from "lucide-react";
+import { ArrowUpRight, CreditCard } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { DashboardShell } from "~/components/dashboard/dashboard-shell";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { authClient } from "~/lib/auth/client";
+import { Link } from "~/lib/i18n/navigation";
 import { formatStripeAmount } from "~/lib/stripe/format";
-import { findPlanByName, isSamePlan, subscriptionPlans } from "~/lib/stripe/plans";
+import { findPlanByName, getHighlightedPlan } from "~/lib/stripe/plans";
 
 export default function DashboardPage() {
-  const t = useTranslations("Pricing");
+  const t = useTranslations("Billing");
   const locale = useLocale();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchSubscription() {
@@ -35,38 +34,12 @@ export default function DashboardPage() {
     fetchSubscription();
   }, []);
 
-  const handleUpgrade = async (plan: (typeof subscriptionPlans)[number]) => {
-    setLoadingPlan(plan.name);
-    try {
-      const { error } = await authClient.subscription.upgrade({
-        plan: plan.name,
-        successUrl: "/dashboard/billing",
-        cancelUrl: "/dashboard",
-        returnUrl: "/dashboard/billing",
-        ...(subscription?.stripeSubscriptionId && {
-          subscriptionId: subscription.stripeSubscriptionId,
-        }),
-      });
-      if (error) {
-        // A bare 404 (no error code) means the Stripe plugin isn't registered
-        // — the deployment is missing the STRIPE_* environment variables.
-        if (error.status === 404 && !error.code) {
-          console.warn("[stripe] Subscription endpoints are not registered — set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (see README).");
-          toast.error(t("billingNotConfigured"));
-        } else {
-          toast.error(error.message ?? t("checkoutError"));
-        }
-      }
-    } catch (error) {
-      console.error("Error during upgrade:", error);
-      toast.error(t("checkoutError"));
-    } finally {
-      setLoadingPlan(null);
-    }
-  };
-
-  const currentPlanName = subscription?.plan || "Free";
-  const currentPlanDetails = findPlanByName(currentPlanName);
+  const currentPlanDetails = findPlanByName(subscription?.plan);
+  const currentPlanName = currentPlanDetails?.name ?? subscription?.plan ?? t("freePlan");
+  // Only suggest an upgrade when there is a higher tier than the current plan.
+  const upgradeSuggestion = getHighlightedPlan(subscription?.plan);
+  const formatDate = (date: string | Date) =>
+    new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(date));
 
   const usageStats = {
     used: 764, // This should be fetched from a relevant API
@@ -81,77 +54,50 @@ export default function DashboardPage() {
           <h2 className="text-2xl font-medium">Overview</h2>
         </div>
 
-        {/* Subscription Plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {subscriptionPlans.map((plan) => {
-            const isCurrent = isSamePlan(plan.name, currentPlanName);
-            return (
-              <Card
-                key={plan.name}
-                className={`flex flex-col ${isCurrent ? "border-primary" : ""}`}
-              >
-                <CardHeader>
-                  <div className="flex justify-between items-center mb-2">
-                    <CardTitle className="text-lg">{plan.name}</CardTitle>
-                    {isCurrent && (
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                        Active
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-baseline">
-                    <span className="text-2xl font-bold">
-                      {formatStripeAmount(plan.price, plan.currency, locale)}
-                    </span>
-                    <span className="text-muted-foreground ml-1">{t("perMonth")}</span>
-                  </div>
-                  <CardDescription>{t(`plans.${plan.key}.description`)}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2">
-                    {(t.raw(`plans.${plan.key}.features`) as string[]).map(feature => (
-                      <li key={feature} className="flex items-start">
-                        {isCurrent
-                          ? (
-                              <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mr-2 mt-0.5" />
-                            )
-                          : (
-                              <Circle className="h-4 w-4 shrink-0 mr-2 mt-0.5" />
-                            )}
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  {isCurrent
-                    ? (
-                        <Button variant="outline" className="w-full" disabled>
-                          {t("currentPlan")}
-                        </Button>
-                      )
-                    : (
-                        <Button
-                          variant="default"
-                          className="w-full"
-                          onClick={() => handleUpgrade(plan)}
-                          disabled={
-                            loadingPlan !== null
-                            || (currentPlanDetails && plan.price < currentPlanDetails.price)
-                          }
-                        >
-                          {loadingPlan === plan.name
-                            ? t("redirecting")
-                            : subscription
-                              ? t("upgrade")
-                              : t("choosePlan")}
-                        </Button>
-                      )}
-                </CardFooter>
-              </Card>
-            );
-          })}
-        </div>
+        {/* Current plan summary — plan changes happen on /pricing and /dashboard/billing */}
+        <Card>
+          <CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10">
+                <CreditCard className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium">
+                  {currentPlanName}
+                  {" "}
+                  {t("planSuffix")}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {currentPlanDetails
+                    ? `${formatStripeAmount(
+                      subscription?.billingInterval === "year" ? currentPlanDetails.annualPrice : currentPlanDetails.price,
+                      currentPlanDetails.currency,
+                      locale,
+                    )}${subscription?.billingInterval === "year" ? t("perYear") : t("perMonth")}`
+                    : t("freePlanDescription")}
+                  {subscription?.status === "trialing" && subscription.trialEnd
+                    ? ` · ${t("trialNotice", { date: formatDate(subscription.trialEnd) })}`
+                    : subscription?.periodEnd
+                      ? ` · ${t("nextBillingDate", { date: formatDate(subscription.periodEnd) })}`
+                      : ""}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {upgradeSuggestion && (
+                <Button asChild>
+                  <Link href="/pricing">
+                    {t("upgradeCta", { plan: upgradeSuggestion.name })}
+                    <ArrowUpRight className="ml-1 h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+              <Button variant="outline" asChild>
+                <Link href="/dashboard/billing">{t("manageSubscription")}</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <Tabs defaultValue="overview" className="w-full">
           <TabsList>

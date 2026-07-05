@@ -99,18 +99,18 @@
       "professional": {
         "description": "For professional developers and small teams.",
         "features": [
-          "All Supporter features",
           "Priority support",
-          "Early access to new features"
+          "Early access to new features",
+          "Up to 5 projects"
         ]
       },
       "partner": {
         "description": "For businesses and enterprises.",
         "features": [
-          "All Professional features",
           "Direct communication channel",
           "Logo on our homepage",
-          "Custom feature prioritization"
+          "Custom feature prioritization",
+          "Unlimited projects"
         ]
       }
     },
@@ -125,7 +125,22 @@
     "downgradeDescription": "You'll keep your current plan until {date}, then switch to {plan}. No refund or credit juggling — you simply pay the lower price from the next cycle.",
     "downgradeDescriptionNoDate": "Your plan will switch to {plan} at the end of the current billing period.",
     "downgradeCancel": "Keep current plan",
-    "downgradeConfirm": "Schedule downgrade"
+    "downgradeConfirm": "Schedule downgrade",
+    "upgradeTo": "Upgrade to {plan}",
+    "includesAll": "Everything in {plan}, plus:",
+    "getStarted": "Get started",
+    "haveSubscription": "Already subscribed?",
+    "billingHelp": "Manage billing",
+    "billedAnnually": "billed annually",
+    "free": {
+      "name": "Free",
+      "tagline": "Everything you need to try it out",
+      "features": [
+        "Core features to get started",
+        "Community support",
+        "1 project"
+      ]
+    }
   },
   "Billing": {
     "title": "Billing & Invoices",
@@ -157,7 +172,10 @@
     "pendingPlanChangeNoDate": "A plan change is scheduled for the end of this billing period.",
     "cancelChange": "Cancel change",
     "cancelChangeError": "Could not cancel the scheduled change. Please try again.",
-    "cancelChangeSuccess": "The scheduled plan change has been canceled."
+    "cancelChangeSuccess": "The scheduled plan change has been canceled.",
+    "freePlanDescription": "You're on the free plan",
+    "trialNotice": "Free trial — first charge on {date}",
+    "upgradeCta": "Upgrade to {plan}"
   },
   "PaymentResult": {
     "loadingTitle": "Loading Payment Result",

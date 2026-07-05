@@ -14,7 +14,13 @@ export interface SubscriptionPlan {
   annualPrice: number;
   /** ISO currency code for the display price. */
   currency: string;
-  buttonVariant: "default" | "outline";
+  /** Name of the lower tier whose features are included ("Everything in X, plus:"). */
+  includes?: string;
+  /**
+   * One icon per entry of the locale `Pricing.plans.<key>.features` array
+   * (see FEATURE_ICONS in pricing.tsx; falls back to a check mark).
+   */
+  featureIcons: string[];
   popular: boolean;
   freeTrialDays?: number;
   limits: {
@@ -29,7 +35,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     price: 900,
     annualPrice: 9000, // 10x monthly = 2 months free
     currency: "usd",
-    buttonVariant: "outline",
+    featureIcons: ["sparkles", "messages", "badge", "users"],
     popular: false,
     limits: {
       projects: 1,
@@ -41,7 +47,8 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     price: 2900,
     annualPrice: 29000,
     currency: "usd",
-    buttonVariant: "default",
+    includes: "Supporter",
+    featureIcons: ["headphones", "rocket", "folders"],
     popular: true,
     freeTrialDays: 14,
     limits: {
@@ -54,7 +61,8 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     price: 9900,
     annualPrice: 99000,
     currency: "usd",
-    buttonVariant: "outline",
+    includes: "Professional",
+    featureIcons: ["message-dot", "building", "sliders", "infinity"],
     popular: false,
     limits: {
       projects: -1, // -1 means unlimited
@@ -75,4 +83,20 @@ export function findPlanByName(name: string | null | undefined): SubscriptionPla
 
 export function isSamePlan(a: string | null | undefined, b: string | null | undefined): boolean {
   return !!a && !!b && a.toLowerCase() === b.toLowerCase();
+}
+
+/**
+ * Which plan to visually promote, relative to what the user already has:
+ * not subscribed -> the marketing "popular" plan; subscribed -> the next tier
+ * up; already on the top tier -> nothing (never promote a downgrade).
+ */
+export function getHighlightedPlan(currentPlanName: string | null | undefined): SubscriptionPlan | null {
+  const current = findPlanByName(currentPlanName);
+  if (!current) {
+    return subscriptionPlans.find(plan => plan.popular) ?? null;
+  }
+  const upgrades = subscriptionPlans
+    .filter(plan => plan.price > current.price)
+    .sort((a, b) => a.price - b.price);
+  return upgrades[0] ?? null;
 }

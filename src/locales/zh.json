@@ -99,18 +99,18 @@
       "professional": {
         "description": "适合职业开发者和小型团队。",
         "features": [
-          "包含 Supporter 全部功能",
           "优先支持",
-          "抢先体验新功能"
+          "抢先体验新功能",
+          "最多 5 个项目"
         ]
       },
       "partner": {
         "description": "适合企业和商业机构。",
         "features": [
-          "包含 Professional 全部功能",
           "专属沟通渠道",
           "首页展示您的 Logo",
-          "定制功能优先级"
+          "定制功能优先级",
+          "无限项目"
         ]
       }
     },
@@ -125,7 +125,22 @@
     "downgradeDescription": "当前套餐将保留至 {date}，之后自动切换为 {plan}。无需退款或抵扣——下个周期起按更低价格计费。",
     "downgradeDescriptionNoDate": "套餐将在本计费周期结束时切换为 {plan}。",
     "downgradeCancel": "保留当前套餐",
-    "downgradeConfirm": "确认降级"
+    "downgradeConfirm": "确认降级",
+    "upgradeTo": "升级至 {plan}",
+    "includesAll": "包含 {plan} 的所有内容，以及：",
+    "getStarted": "开始使用",
+    "haveSubscription": "已有订阅？",
+    "billingHelp": "管理账单",
+    "billedAnnually": "按年计费",
+    "free": {
+      "name": "免费版",
+      "tagline": "了解核心功能",
+      "features": [
+        "入门核心功能",
+        "社区支持",
+        "1 个项目"
+      ]
+    }
   },
   "Billing": {
     "title": "账单与发票",
@@ -157,7 +172,10 @@
     "pendingPlanChangeNoDate": "套餐变更已排定，将于本计费周期结束时生效。",
     "cancelChange": "取消变更",
     "cancelChangeError": "无法取消排定的变更，请稍后重试。",
-    "cancelChangeSuccess": "已取消排定的套餐变更。"
+    "cancelChangeSuccess": "已取消排定的套餐变更。",
+    "freePlanDescription": "您正在使用免费版",
+    "trialNotice": "免费试用中，{date} 首次扣款",
+    "upgradeCta": "升级至 {plan}"
   },
   "PaymentResult": {
     "loadingTitle": "正在加载支付结果",
