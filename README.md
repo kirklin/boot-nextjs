@@ -89,11 +89,12 @@ Don't need everything? Right after cloning, run:
 pnpm trim
 ```
 
-Interactive prompts let you drop features; the tool deletes the code, removes the dependencies, cleans env/config/locales, regenerates migrations where needed, and verifies the result with ESLint + TypeScript before removing itself.
+An interactive picker lets you choose which features to keep — AI components, Stripe payments, auth + dashboard + database. The tool validates the whole change set before touching a single file, then deletes the code, removes the dependencies, cleans env/config/locales/docs, regenerates migrations where needed, verifies the result with ESLint + TypeScript, and removes itself only after everything passes.
 
-- `pnpm trim --preset no-payments` — keep auth + dashboard, remove Stripe
-- `pnpm trim --preset landing` — marketing site only (no payments, auth, or database)
-- add `--dry-run` to preview the changes
+- `pnpm trim --remove ai` — drop the AI component library and its 15 dependencies
+- `pnpm trim --remove payments` (or `--preset no-payments`) — keep auth + dashboard, remove Stripe
+- `pnpm trim --preset landing` — marketing site only (removes AI, payments, auth, database)
+- add `--dry-run` to preview the plan without changing anything
 
 ## Internationalization & SEO
 

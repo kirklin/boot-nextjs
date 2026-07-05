@@ -94,11 +94,12 @@ pnpm dev
 pnpm trim
 ```
 
-交互式选择要移除的功能；工具会删除对应代码、清理依赖、环境变量、配置和翻译文案，必要时重新生成数据库迁移，并用 ESLint + TypeScript 验证结果，最后自我删除。
+交互式勾选要保留的功能——AI 组件、Stripe 支付、登录 + 后台 + 数据库。工具会先在内存中校验完整变更集（一个锚点失配都不会动任何文件），然后删除代码、清理依赖、环境变量、配置、翻译和文档，必要时重新生成数据库迁移，用 ESLint + TypeScript 验证通过后才自我删除。
 
-- `pnpm trim --preset no-payments` — 保留登录和后台，移除 Stripe 支付
-- `pnpm trim --preset landing` — 纯展示站（移除支付、登录、数据库）
-- 加 `--dry-run` 可预览将发生的变更
+- `pnpm trim --remove ai` — 移除 AI 组件库及其 15 个依赖
+- `pnpm trim --remove payments`（或 `--preset no-payments`）— 保留登录和后台，移除 Stripe
+- `pnpm trim --preset landing` — 纯展示站（移除 AI、支付、登录、数据库）
+- 加 `--dry-run` 可预览计划而不做任何改动
 
 ## 国际化与 SEO
 
