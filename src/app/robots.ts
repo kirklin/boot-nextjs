@@ -1,21 +1,26 @@
 import type { MetadataRoute } from "next";
-import { locales } from "~/lib/i18n/navigation";
 import { getBaseUrl } from "~/lib/url";
+
+// Pages with no SEO value, kept out of the index (paired with noindex
+// metadata on the routes themselves). The "/*/" variants cover
+// locale-prefixed URLs (/zh/dashboard, ...).
+const privatePages = ["/dashboard", "/sign-in", "/sign-up", "/payment-result"];
 
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = getBaseUrl(); // Define base URL
 
-  // Initialize sitemap array with main sitemap
+  // sitemap.ts covers every locale (with hreflang alternates) in one file.
   const sitemaps: string[] = [`${baseUrl}/sitemap.xml`];
 
-  // Add language-specific sitemaps
-  locales.forEach((locale) => {
-    if (locale !== "en") { // Skip default locale as it's already covered
-      sitemaps.push(`${baseUrl}/${locale}/sitemap.xml`);
-    }
-  });
-
-  const commonDisallow = ["/api/", "/static/", "/404", "/500", "/*.json$", "/cdn-cgi/"];
+  const commonDisallow = [
+    "/api/",
+    "/static/",
+    "/404",
+    "/500",
+    "/*.json$",
+    "/cdn-cgi/",
+    ...privatePages.flatMap(page => [page, `/*${page}`]),
+  ];
 
   const aiBotUserAgents = [
     "AI2Bot",

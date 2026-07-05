@@ -1,54 +1,48 @@
-import { defaultLocale, localePrefix, routing } from "~/lib/i18n/navigation";
+import type { Metadata } from "next";
+import { defaultLocale, getPathname, localePrefix, routing } from "~/lib/i18n/navigation";
 
-interface AlternatesConfig {
-  canonical: string;
-  languages: Record<string, string>;
+type Locale = (typeof routing.locales)[number];
+
+/**
+ * Locale-prefixed pathname for a route, derived from the routing config via
+ * next-intl — correct for every localePrefix strategy without hand-rolled
+ * prefix logic. Combined with `metadataBase` these resolve to absolute URLs.
+ */
+export function localizedPathname(basePath: string, locale: Locale): string {
+  return getPathname({ locale, href: basePath });
 }
 
-export function createAlternates(basePath: string, locale?: string): AlternatesConfig {
+/**
+ * Canonical + hreflang alternates for a page.
+ *
+ * With localePrefix "never" all locales share one URL, so only the canonical
+ * is emitted — per-language alternates would all point at the same place and
+ * search engines can only index a single language version.
+ */
+export function createAlternates(basePath: string, locale?: string): Metadata["alternates"] {
+  const currentLocale = (locale ?? defaultLocale) as Locale;
+  const canonical = localizedPathname(basePath, currentLocale);
+
+  if (localePrefix === "never") {
+    return { canonical };
+  }
+
   const languages: Record<string, string> = {};
-  const currentLocale = locale || defaultLocale;
-
-  // Generate language-specific URLs
-  routing.locales.forEach((locale: string) => {
-    // For default locale with localePrefix="as-needed", omit the locale prefix
-    if (locale === defaultLocale && localePrefix === "as-needed") {
-      languages[locale] = basePath;
-    } else {
-      // For non-default locales or if localePrefix="always"
-      if (basePath === "/") {
-        languages[locale] = `/${locale}`;
-      } else {
-        languages[locale] = `/${locale}${basePath}`;
-      }
-    }
-  });
-
-  // Add x-default (should point to the default language)
-  // For localePrefix="as-needed", x-default points to URL without locale prefix
-  if (localePrefix === "as-needed") {
-    languages["x-default"] = basePath;
-  } else {
-    // For localePrefix="always" or other settings
-    if (basePath === "/") {
-      languages["x-default"] = `/${defaultLocale}`;
-    } else {
-      languages["x-default"] = `/${defaultLocale}${basePath}`;
-    }
+  for (const l of routing.locales) {
+    languages[l] = localizedPathname(basePath, l);
   }
+  // x-default: the version served when no language matches.
+  languages["x-default"] = localizedPathname(basePath, defaultLocale);
 
-  // Set canonical URL based on current locale
-  let canonicalUrl;
-  if (currentLocale === defaultLocale && localePrefix === "as-needed") {
-    // 对于默认语言和as-needed配置，不包含区域前缀
-    canonicalUrl = basePath;
-  } else {
-    // 对于非默认语言或localePrefix="always"，包含区域前缀
-    canonicalUrl = basePath === "/" ? `/${currentLocale}` : `/${currentLocale}${basePath}`;
-  }
+  return { canonical, languages };
+}
 
-  return {
-    canonical: canonicalUrl,
-    languages,
-  };
+const OG_LOCALES: Record<string, string> = {
+  en: "en_US",
+  zh: "zh_CN",
+};
+
+/** Open Graph locale identifier (e.g. zh -> zh_CN) for og:locale. */
+export function ogLocale(locale: string): string {
+  return OG_LOCALES[locale] ?? locale;
 }

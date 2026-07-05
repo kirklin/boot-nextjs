@@ -9,7 +9,7 @@ import { Toaster } from "~/components/ui/sonner";
 import { inter } from "~/lib/fonts";
 import { routing } from "~/lib/i18n/navigation";
 import { getBaseUrl } from "~/lib/url";
-import { cn, createAlternates } from "~/lib/utils";
+import { cn, createAlternates, ogLocale } from "~/lib/utils";
 import "~/styles/global.css";
 
 type Params = Promise<{ locale: string }>;
@@ -26,6 +26,9 @@ export async function generateMetadata({
     title: "Boot Next.js App",
     metadataBase: new URL(getBaseUrl()),
     alternates: createAlternates("/", locale),
+    openGraph: {
+      locale: ogLocale(locale),
+    },
   };
 }
 

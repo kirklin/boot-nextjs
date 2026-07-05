@@ -86,6 +86,23 @@ pnpm dev
 
 本地测试 Stripe Webhook：运行 `pnpm stripe:listen`（Docker 化的 Stripe CLI，需要 `.env` 中的 `STRIPE_SECRET_KEY`），并把输出的 `whsec_...` 填入 `STRIPE_WEBHOOK_SECRET`。
 
+## 国际化与 SEO
+
+语言路由策略由 [`src/lib/i18n/navigation.ts`](src/lib/i18n/navigation.ts) 中的**一行代码**控制：
+
+```ts
+export const localePrefix: "always" | "as-needed" | "never" = "as-needed";
+```
+
+- **`as-needed`**（默认）— 默认语言无前缀（`/pricing`），其他语言带前缀（`/zh/pricing`）。营销页 + 后台混合应用的主流选择。
+- **`always`** — 所有语言都带前缀（`/en/pricing`、`/zh/pricing`）。
+- **`never`** — 所有语言共用一个 URL，语言由 cookie 决定。纯登录后应用最简单（但搜索引擎只能收录一种语言）。
+- **独立域名**（`example.com` / `example.cn`）— 取消同文件中 `domains` 配置的注释即可。
+
+下游一切自动适配：导航、中间件跳转、canonical、hreflang alternates、sitemap 全部通过 next-intl 的 `getPathname` 从这份配置推导 URL。
+
+SEO 已全部接好：页面级 `canonical` + `hreflang` 标签（含 `x-default`）、中间件输出的 hreflang `Link` 响应头、多语言 [`sitemap.ts`](src/app/sitemap.ts)（带 alternate 语言条目）、`og:locale`，以及登录/后台/支付页的 `noindex` + robots 屏蔽。只需遵守一条纪律：内部跳转永远使用 `~/lib/i18n/navigation` 导出的 `Link`/`useRouter`/`redirect`（不要直接用 `next/link`/`next/navigation`），路径写裸路径，前缀由封装按当前策略自动补齐。
+
 ## 支付（Stripe）
 
 支付体系基于 [Stripe Checkout](https://docs.stripe.com/payments/checkout) 和 [`@better-auth/stripe`](https://better-auth.com/docs/plugins/stripe) 插件构建——订阅、账单门户（Billing Portal）、一次性支付和 Webhook 均已预置。

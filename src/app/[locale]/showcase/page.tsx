@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
 import Image from "next/image";
@@ -10,6 +11,23 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { caseStudies } from "~/data/case-studies";
+import { getBaseUrl } from "~/lib/url";
+import { createAlternates } from "~/lib/utils";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: "Showcase - Boot Next.js App",
+    description: "Projects built with Boot Next.js",
+    metadataBase: new URL(getBaseUrl()),
+    alternates: createAlternates("/showcase", locale),
+  };
+}
 
 export default function ShowcasePage({
   params,

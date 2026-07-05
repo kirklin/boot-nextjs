@@ -81,6 +81,23 @@ If port 5432 is already in use, set `POSTGRES_PORT=5433` in `.env` and update `D
 
 To test Stripe webhooks locally, run `pnpm stripe:listen` (Dockerized Stripe CLI; requires `STRIPE_SECRET_KEY` in `.env`) and copy the printed `whsec_...` into `STRIPE_WEBHOOK_SECRET`.
 
+## Internationalization & SEO
+
+Locale routing is controlled by **one line** in [`src/lib/i18n/navigation.ts`](src/lib/i18n/navigation.ts):
+
+```ts
+export const localePrefix: "always" | "as-needed" | "never" = "as-needed";
+```
+
+- **`as-needed`** (default) — default locale unprefixed (`/pricing`), others prefixed (`/zh/pricing`). The common choice for marketing + app hybrids.
+- **`always`** — every locale prefixed (`/en/pricing`, `/zh/pricing`).
+- **`never`** — one URL for all locales, language from cookie. Simplest for login-only apps (search engines then index a single language only).
+- **Domain-based** (`example.com` / `example.cn`) — uncomment the `domains` config in the same file.
+
+Everything downstream adapts automatically: navigation, middleware redirects, canonicals, hreflang alternates, and the sitemap all derive URLs from this config via next-intl's `getPathname`.
+
+SEO comes wired up: per-page `canonical` + `hreflang` link tags (incl. `x-default`), hreflang `Link` response headers from the middleware, a locale-aware [`sitemap.ts`](src/app/sitemap.ts) with alternate-language entries, `og:locale`, and `noindex` + robots disallow for auth/dashboard/payment pages. One rule keeps it working: always use `Link`/`useRouter`/`redirect` from `~/lib/i18n/navigation` (never `next/link`/`next/navigation` directly) with unprefixed paths — the wrappers add the right prefix for the active strategy.
+
 ## Payments (Stripe)
 
 Billing is built on [Stripe Checkout](https://docs.stripe.com/payments/checkout) and the [`@better-auth/stripe`](https://better-auth.com/docs/plugins/stripe) plugin — subscriptions, the Billing Portal, one-time purchases, and webhooks are preconfigured.

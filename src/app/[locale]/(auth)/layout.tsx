@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { BackgroundBeams } from "~/components/background-beams";
 import { LanguageSwitcher } from "~/components/language-switcher";
 import { ModeToggle } from "~/components/theme-toggle";
 import { Link } from "~/lib/i18n/navigation";
+
+// Auth pages have no SEO value — keep them out of search indexes.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function AuthLayout({
   children,
