@@ -131,14 +131,20 @@ SEO 已全部接好：页面级 `canonical` + `hreflang` 标签（含 `x-default
    stripe listen --forward-to localhost:3000/api/auth/stripe/webhook
    ```
 
-3. **价格** — 在 Dashboard 的产品目录中创建产品，并设置 `STRIPE_PRICE_*` 环境变量（参见 `.env.example`）。套餐展示信息位于 `src/lib/stripe/plans.ts`，价格 ID 映射位于 `src/lib/stripe/plans.server.ts`。
+3. **价格** — 运行 `pnpm stripe:seed`：一键创建产品、月付/年付价格，并配置好账单门户（套餐切换 + 即时开票），然后打印出 `STRIPE_PRICE_*` 填入 `.env`。幂等，可安全重跑。套餐展示信息位于 `src/lib/stripe/plans.ts`，价格 ID 映射位于 `src/lib/stripe/plans.server.ts`。
 4. **支付方式** — 在 [Dashboard → Payment methods](https://dashboard.stripe.com/settings/payment_methods) 中启用银行卡、钱包、支付宝、微信支付、Link 等。Checkout 会自动向用户展示所有已启用且匹配币种和地区的支付方式，无需改动代码。
+
+### 计费行为（行业主流默认值）
+
+- **升级即时生效**：立刻按比例扣差价并出发票（账单门户确认，`always_invoice`）。
+- **降级期末生效**：应用内排定切换（没有退款和抵扣余额的困惑），账单页展示排定的变更并支持一键取消。
+- **支付失败可见**：`past_due`/`unpaid` 订阅会显示醒目警告和"更新支付方式"入口，而不是悄悄显示为免费版。
+- **年付折扣**：定价页内置月付/年付切换（"免 2 个月"），热门套餐带 **14 天免费试用**（`plans.ts` 的 `freeTrialDays`）。
 
 ### 内置能力
 
-- **订阅** — 结账、套餐变更（通过账单门户确认）、取消/恢复、发票历史；订阅状态由插件的 Webhook 处理器同步到 `subscription` 表。
+- **订阅** — 结账、套餐变更、取消/恢复、发票历史；订阅状态由插件的 Webhook 处理器同步到 `subscription` 表。
 - **一次性支付** — 调用 `POST /api/stripe/checkout` 并传入 `src/lib/stripe/products.ts` 中的商品 key（`mode: "payment"`，支持不能用于订阅的支付方式，如微信支付）。支付完成后记录到 `payment` 表，异步支付方式（银行转账等）也会正确处理。
-- **可选预设** — 免费试用（`plans.ts` 中的 `freeTrialDays`）和年付价格（`STRIPE_PRICE_*_ANNUAL`，配合插件的 `annual` 升级参数使用）。
 
 测试模式下可使用 [测试卡号](https://docs.stripe.com/testing)（如 `4242 4242 4242 4242`）。
 

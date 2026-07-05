@@ -114,7 +114,18 @@
         ]
       }
     },
-    "billingNotConfigured": "Payments are not configured on this deployment."
+    "billingNotConfigured": "Payments are not configured on this deployment.",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "annualSave": "2 months free",
+    "perYear": "/year",
+    "switchBilling": "Switch billing cycle",
+    "downgrade": "Downgrade",
+    "downgradeTitle": "Confirm downgrade",
+    "downgradeDescription": "You'll keep your current plan until {date}, then switch to {plan}. No refund or credit juggling — you simply pay the lower price from the next cycle.",
+    "downgradeDescriptionNoDate": "Your plan will switch to {plan} at the end of the current billing period.",
+    "downgradeCancel": "Keep current plan",
+    "downgradeConfirm": "Schedule downgrade"
   },
   "Billing": {
     "title": "Billing & Invoices",
@@ -137,7 +148,16 @@
     "invoicesError": "Could not load invoices.",
     "viewAllInvoices": "View All Invoices",
     "billingQuestions": "For billing questions, please <link>contact support</link>.",
-    "perMonth": "/month"
+    "perMonth": "/month",
+    "perYear": "/year",
+    "paymentIssueTitle": "Payment problem",
+    "paymentIssueDescription": "Your last payment didn't go through. Update your payment method to keep your subscription active.",
+    "updatePaymentMethod": "Update payment method",
+    "pendingPlanChange": "A plan change is scheduled for {date}.",
+    "pendingPlanChangeNoDate": "A plan change is scheduled for the end of this billing period.",
+    "cancelChange": "Cancel change",
+    "cancelChangeError": "Could not cancel the scheduled change. Please try again.",
+    "cancelChangeSuccess": "The scheduled plan change has been canceled."
   },
   "PaymentResult": {
     "loadingTitle": "Loading Payment Result",

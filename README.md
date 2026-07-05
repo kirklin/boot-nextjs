@@ -126,14 +126,20 @@ Billing is built on [Stripe Checkout](https://docs.stripe.com/payments/checkout)
    stripe listen --forward-to localhost:3000/api/auth/stripe/webhook
    ```
 
-3. **Prices** — create your products in the Dashboard's Product catalog and set the `STRIPE_PRICE_*` variables (see `.env.example`). Plan metadata lives in `src/lib/stripe/plans.ts`; price IDs are mapped in `src/lib/stripe/plans.server.ts`.
+3. **Prices** — run `pnpm stripe:seed`: it creates the products, monthly/annual prices, and configures the Billing Portal (plan switching with immediate invoicing) in one go, then prints the `STRIPE_PRICE_*` lines for your `.env`. Idempotent — safe to re-run. Plan metadata lives in `src/lib/stripe/plans.ts`; price IDs are mapped in `src/lib/stripe/plans.server.ts`.
 4. **Payment methods** — enable cards, wallets, Alipay, WeChat Pay, Link, etc. in [Dashboard → Payment methods](https://dashboard.stripe.com/settings/payment_methods). Checkout offers every enabled method that matches the currency and customer location — no code changes needed.
+
+### Billing behavior (industry defaults)
+
+- **Upgrades are immediate**: the prorated difference is charged right away and produces an invoice (Billing Portal confirmation, `always_invoice`).
+- **Downgrades take effect at period end**: the app schedules the switch (no refunds or credit-balance surprises); the billing page shows the pending change with a one-click cancel.
+- **Failed payments are visible**: `past_due`/`unpaid` subscriptions surface a warning banner with an "update payment method" shortcut instead of silently showing the free plan.
+- **Annual billing** with a built-in "2 months free" toggle on the pricing page, and a **14-day free trial** on the popular plan (`freeTrialDays` in `plans.ts`).
 
 ### What's included
 
-- **Subscriptions** — checkout, plan changes (confirmed through the Billing Portal), cancel/resume, invoice history; state is synced to the `subscription` table by the plugin's webhook handler.
+- **Subscriptions** — checkout, plan changes, cancel/resume, invoice history; state is synced to the `subscription` table by the plugin's webhook handler.
 - **One-time payments** — `POST /api/stripe/checkout` with a product key from `src/lib/stripe/products.ts` (`mode: "payment"`, supports payment methods that don't allow recurring billing). Completed purchases are recorded in the `payment` table, including async payment methods.
-- **Optional presets** — free trials (`freeTrialDays` in `plans.ts`) and annual prices (`STRIPE_PRICE_*_ANNUAL`, used with the plugin's `annual` upgrade flag).
 
 Use [test cards](https://docs.stripe.com/testing) (e.g. `4242 4242 4242 4242`) while in test mode.
 

@@ -114,7 +114,18 @@
         ]
       }
     },
-    "billingNotConfigured": "该部署尚未配置支付功能。"
+    "billingNotConfigured": "该部署尚未配置支付功能。",
+    "monthly": "月付",
+    "annual": "年付",
+    "annualSave": "免 2 个月",
+    "perYear": "/年",
+    "switchBilling": "切换计费周期",
+    "downgrade": "降级",
+    "downgradeTitle": "确认降级",
+    "downgradeDescription": "当前套餐将保留至 {date}，之后自动切换为 {plan}。无需退款或抵扣——下个周期起按更低价格计费。",
+    "downgradeDescriptionNoDate": "套餐将在本计费周期结束时切换为 {plan}。",
+    "downgradeCancel": "保留当前套餐",
+    "downgradeConfirm": "确认降级"
   },
   "Billing": {
     "title": "账单与发票",
@@ -137,7 +148,16 @@
     "invoicesError": "无法加载发票。",
     "viewAllInvoices": "查看全部发票",
     "billingQuestions": "如有账单问题，请<link>联系客服</link>。",
-    "perMonth": "/月"
+    "perMonth": "/月",
+    "perYear": "/年",
+    "paymentIssueTitle": "支付出现问题",
+    "paymentIssueDescription": "上次扣款未成功。请更新支付方式以保持订阅有效。",
+    "updatePaymentMethod": "更新支付方式",
+    "pendingPlanChange": "套餐变更已排定，将于 {date} 生效。",
+    "pendingPlanChangeNoDate": "套餐变更已排定，将于本计费周期结束时生效。",
+    "cancelChange": "取消变更",
+    "cancelChangeError": "无法取消排定的变更，请稍后重试。",
+    "cancelChangeSuccess": "已取消排定的套餐变更。"
   },
   "PaymentResult": {
     "loadingTitle": "正在加载支付结果",

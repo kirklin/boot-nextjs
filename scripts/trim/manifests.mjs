@@ -85,6 +85,7 @@ export const payments = {
     "src/app/[locale]/payment-result",
     "src/app/[locale]/pricing",
     "src/components/pricing.tsx",
+    "scripts/stripe-seed.mjs",
   ],
   replacements: [
     { file: "src/app/[locale]/dashboard/page.tsx", from: "dashboard-page.tsx.tpl" },
@@ -268,7 +269,7 @@ export const payments = {
   ],
   removeDependencies: ["@better-auth/stripe", "stripe"],
   removeDevDependencies: [],
-  removeScripts: ["stripe:listen"],
+  removeScripts: ["stripe:listen", "stripe:seed"],
   removeLocaleNamespaces: ["Pricing", "Billing", "PaymentResult"],
   removeLocaleKeys: [["Header", "pricing"]],
   regenerateMigrations: true,

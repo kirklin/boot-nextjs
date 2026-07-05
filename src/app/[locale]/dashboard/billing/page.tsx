@@ -1,7 +1,7 @@
 "use client";
 
 import type { Subscription } from "@better-auth/stripe";
-import { ExternalLink } from "lucide-react";
+import { AlertTriangle, ExternalLink } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -37,9 +37,11 @@ export default function BillingPage() {
         fetch("/api/stripe/invoices"),
       ]);
 
-      const activeSubscription = subResponse.data?.find(
-        sub => sub.status === "active" || sub.status === "trialing",
-      );
+      const subs = subResponse.data ?? [];
+      // Prefer a healthy subscription, but surface a payment-troubled one
+      // instead of silently showing "Free" when the card failed.
+      const activeSubscription = subs.find(sub => sub.status === "active" || sub.status === "trialing")
+        ?? subs.find(sub => sub.status === "past_due" || sub.status === "unpaid" || sub.status === "incomplete");
       setSubscription(activeSubscription ?? null);
 
       if (invoicesResponse.ok) {
@@ -86,10 +88,29 @@ export default function BillingPage() {
     }
   };
 
+  // restore() also releases a scheduled plan change (period-end downgrade).
+  const handleCancelPlanChange = async () => {
+    if (!subscription?.stripeSubscriptionId) {
+      return;
+    }
+    const { error } = await authClient.subscription.restore({
+      subscriptionId: subscription.stripeSubscriptionId,
+    });
+    if (error) {
+      toast.error(t("cancelChangeError"));
+    } else {
+      toast.success(t("cancelChangeSuccess"));
+      await fetchData();
+    }
+  };
+
   const planDetails = findPlanByName(subscription?.plan);
   const currentPlanName = planDetails?.name ?? subscription?.plan ?? t("freePlan");
   // Restore works for period-end cancellations and date-scheduled ones alike.
   const isPendingCancel = !!subscription && (!!subscription.cancelAtPeriodEnd || !!subscription.cancelAt);
+  const hasPaymentIssue = !!subscription
+    && ["past_due", "unpaid", "incomplete"].includes(subscription.status ?? "");
+  const hasPendingPlanChange = !!subscription?.stripeScheduleId;
   const formatDate = (date: string | Date) =>
     new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(date));
 
@@ -110,6 +131,23 @@ export default function BillingPage() {
     <DashboardShell>
       <div className="space-y-6">
         <h2 className="text-2xl font-medium">{t("title")}</h2>
+
+        {hasPaymentIssue && (
+          <Card className="border-destructive/50 bg-destructive/5 p-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+                <div>
+                  <p className="font-medium">{t("paymentIssueTitle")}</p>
+                  <p className="text-sm text-muted-foreground">{t("paymentIssueDescription")}</p>
+                </div>
+              </div>
+              <Button variant="destructive" size="sm" onClick={handleManageSubscription}>
+                {t("updatePaymentMethod")}
+              </Button>
+            </div>
+          </Card>
+        )}
 
         <Card className="p-6">
           <div className="flex items-center justify-between">
@@ -136,8 +174,14 @@ export default function BillingPage() {
                   </p>
                   {(planDetails || !subscription) && (
                     <p className="text-sm text-muted-foreground">
-                      {planDetails ? formatStripeAmount(planDetails.price, planDetails.currency, locale) : formatStripeAmount(0, "usd", locale)}
-                      {t("perMonth")}
+                      {planDetails
+                        ? formatStripeAmount(
+                            subscription?.billingInterval === "year" ? planDetails.annualPrice : planDetails.price,
+                            planDetails.currency,
+                            locale,
+                          )
+                        : formatStripeAmount(0, "usd", locale)}
+                      {subscription?.billingInterval === "year" ? t("perYear") : t("perMonth")}
                     </p>
                   )}
                 </div>
@@ -153,6 +197,18 @@ export default function BillingPage() {
                 <div className="mt-4">
                   <Button variant="outline" size="sm" onClick={handleResumeSubscription}>
                     {t("resume")}
+                  </Button>
+                </div>
+              )}
+              {hasPendingPlanChange && !isPendingCancel && (
+                <div className="mt-4 flex items-center justify-between rounded-md border border-primary/30 bg-primary/5 p-3 text-sm">
+                  <span>
+                    {subscription?.periodEnd
+                      ? t("pendingPlanChange", { date: formatDate(subscription.periodEnd) })
+                      : t("pendingPlanChangeNoDate")}
+                  </span>
+                  <Button variant="outline" size="sm" onClick={handleCancelPlanChange}>
+                    {t("cancelChange")}
                   </Button>
                 </div>
               )}

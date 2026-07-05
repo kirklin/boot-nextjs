@@ -10,6 +10,8 @@ export interface SubscriptionPlan {
   name: string;
   /** Display price in the smallest currency unit (e.g. cents). */
   price: number;
+  /** Display price for annual billing (total per year). Mirrors STRIPE_PRICE_*_ANNUAL. */
+  annualPrice: number;
   /** ISO currency code for the display price. */
   currency: string;
   buttonVariant: "default" | "outline";
@@ -25,6 +27,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     key: "supporter",
     name: "Supporter",
     price: 900,
+    annualPrice: 9000, // 10x monthly = 2 months free
     currency: "usd",
     buttonVariant: "outline",
     popular: false,
@@ -36,9 +39,11 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     key: "professional",
     name: "Professional",
     price: 2900,
+    annualPrice: 29000,
     currency: "usd",
     buttonVariant: "default",
     popular: true,
+    freeTrialDays: 14,
     limits: {
       projects: 5,
     },
@@ -47,6 +52,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     key: "partner",
     name: "Partner",
     price: 9900,
+    annualPrice: 99000,
     currency: "usd",
     buttonVariant: "outline",
     popular: false,
