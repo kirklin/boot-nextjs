@@ -1,6 +1,7 @@
 "use client";
 
 import { LogOut, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 
@@ -15,10 +16,8 @@ import {
 import { authClient } from "~/lib/auth/client";
 import { Link, useRouter } from "~/lib/i18n/navigation";
 
-// 简化版的Better Auth集成
-// 在实际项目中，应该使用Better Auth的API和SDK
 export function UserNav() {
-  // Use Better Auth's authClient to get user session
+  const t = useTranslations("UserNav");
   const { data: user, isPending } = authClient.useSession();
   const router = useRouter();
 
@@ -41,7 +40,7 @@ export function UserNav() {
             {user?.user?.image && (
               <AvatarImage
                 src={user.user.image}
-                alt={user.user.name || "User avatar"}
+                alt={user.user.name || t("userAvatar")}
               />
             )}
             <AvatarFallback>
@@ -54,7 +53,7 @@ export function UserNav() {
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {isPending ? "Loading..." : user?.user?.name || "Unknown user"}
+              {isPending ? t("loading") : user?.user?.name || t("unknownUser")}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {user?.user?.email || ""}
@@ -65,12 +64,12 @@ export function UserNav() {
         <DropdownMenuItem asChild>
           <Link href="/dashboard/profile" className="flex w-full cursor-pointer">
             <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+            <span>{t("profile")}</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>{t("logOut")}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

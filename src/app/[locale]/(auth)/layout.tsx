@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { BackgroundBeams } from "~/components/background-beams";
 import { LanguageSwitcher } from "~/components/language-switcher";
@@ -9,6 +10,7 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const t = await getTranslations("Auth");
   return (
     <main className="relative flex h-screen w-full flex-col overflow-hidden">
       <div className="absolute right-5 top-5 z-50">
@@ -28,7 +30,7 @@ export default async function AuthLayout({
               <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <Image
                   src="/favicon.ico"
-                  alt="Logo"
+                  alt={t("logoAlt")}
                   width={32}
                   height={32}
                   className="rounded-md"
@@ -38,14 +40,14 @@ export default async function AuthLayout({
                 </h1>
               </Link>
               <p className="mt-2 text-muted-foreground max-w-md">
-                Modern, high-performance web application template
+                {t("brandTagline")}
               </p>
             </div>
             <div className="flex-1" />
             <div className="z-10 mb-6 space-y-2">
-              <h2 className="text-xl font-semibold">Fast Development, Exceptional Experience</h2>
+              <h2 className="text-xl font-semibold">{t("brandHeadline")}</h2>
               <p className="text-muted-foreground">
-                Start your next project with best practices and modern tooling to build amazing user experiences.
+                {t("brandSubline")}
               </p>
             </div>
           </div>

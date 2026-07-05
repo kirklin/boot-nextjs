@@ -30,7 +30,7 @@ export function Header({ className }: HeaderProps) {
   const navItems = [
     { href: "/", label: t("home") },
     { href: "/pricing", label: t("pricing") },
-    ...(session?.user ? [{ href: "/dashboard", label: "Dashboard" }] : []),
+    ...(session?.user ? [{ href: "/dashboard", label: t("dashboard") }] : []),
   ];
 
   return (
@@ -125,7 +125,7 @@ export function Header({ className }: HeaderProps) {
                           <Link href="/dashboard/profile">{t("profile")}</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href="/dashboard">Dashboard</Link>
+                          <Link href="/dashboard">{t("dashboard")}</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={async () => {

@@ -11,7 +11,14 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "ui": "pnpm dlx shadcn@latest add",
-    "test": "vitest"
+    "test": "vitest",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d postgres",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "stripe:listen": "docker compose --profile stripe up stripe-cli"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

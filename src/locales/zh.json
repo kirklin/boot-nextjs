@@ -16,7 +16,8 @@
     "signIn": "登录",
     "signUp": "注册",
     "profile": "个人中心",
-    "signOut": "退出登录"
+    "signOut": "退出登录",
+    "dashboard": "控制台"
   },
   "Profile": {
     "anonymousUser": "匿名用户",
@@ -155,5 +156,38 @@
     "statusLabel": "状态：{status}",
     "backToHome": "返回首页",
     "viewReceipt": "查看凭证"
+  },
+  "Auth": {
+    "signInTitle": "欢迎回来",
+    "signInDescription": "登录您的账号以继续",
+    "signUpTitle": "创建账号",
+    "signUpDescription": "填写以下信息即可开始使用",
+    "email": "邮箱",
+    "password": "密码",
+    "fullName": "姓名",
+    "signIn": "登录",
+    "signUp": "注册",
+    "createAccount": "创建账号",
+    "orContinueWith": "或使用以下方式继续",
+    "noAccount": "还没有账号？",
+    "hasAccount": "已有账号？",
+    "passwordHint": "密码长度至少为 8 个字符",
+    "missingCredentials": "请输入邮箱和密码。",
+    "missingFields": "请填写所有必填项。",
+    "signInError": "登录失败，请重试。",
+    "signUpError": "注册失败，请重试。",
+    "accountCreated": "账号创建成功！",
+    "providerNotConfigured": "该登录方式暂不可用。",
+    "logoAlt": "标志",
+    "brandTagline": "现代化、高性能的 Web 应用模板",
+    "brandHeadline": "快速开发，卓越体验",
+    "brandSubline": "以最佳实践和现代工具链开启你的下一个项目，打造出色的用户体验。"
+  },
+  "UserNav": {
+    "loading": "加载中...",
+    "unknownUser": "未知用户",
+    "profile": "个人资料",
+    "logOut": "退出登录",
+    "userAvatar": "用户头像"
   }
 }

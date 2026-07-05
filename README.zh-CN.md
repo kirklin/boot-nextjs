@@ -55,7 +55,7 @@
 
 - Node.js >= 18
 - pnpm >= 9
-- PostgreSQL
+- Docker（用于本地 PostgreSQL）——或自备 PostgreSQL 实例
 
 ### 安装
 
@@ -64,11 +64,27 @@ git clone https://github.com/kirklin/boot-nextjs.git
 cd boot-nextjs
 pnpm install
 cp .env.example .env
-pnpm drizzle-kit push
+pnpm db:up      # 通过 Docker 启动本地 PostgreSQL（compose.yaml）
+pnpm db:migrate # 应用数据库迁移
 pnpm dev
 ```
 
-在浏览器中打开 [http://localhost:3000](http://localhost:3000) 即可查看。
+在浏览器中打开 [http://localhost:3000](http://localhost:3000) 即可查看。认证、订阅、发票等功能全部跑在本地数据库上，无需任何云服务。
+
+常用数据库脚本：
+
+| 命令              | 说明                                |
+| ----------------- | ----------------------------------- |
+| `pnpm db:up`      | 启动本地 PostgreSQL 容器            |
+| `pnpm db:down`    | 停止容器                            |
+| `pnpm db:reset`   | 清空数据库并重新开始                |
+| `pnpm db:migrate` | 应用 SQL 迁移                       |
+| `pnpm db:push`    | 直接推送 drizzle schema（原型开发） |
+| `pnpm db:studio`  | 使用 Drizzle Studio 浏览数据库      |
+
+如果本机 5432 端口已被占用，在 `.env` 中设置 `POSTGRES_PORT=5433` 并同步修改 `DATABASE_URL`。
+
+本地测试 Stripe Webhook：运行 `pnpm stripe:listen`（Docker 化的 Stripe CLI，需要 `.env` 中的 `STRIPE_SECRET_KEY`），并把输出的 `whsec_...` 填入 `STRIPE_WEBHOOK_SECRET`。
 
 ## 支付（Stripe）
 

@@ -1,0 +1,47 @@
+# Local development stack. Cloud services are NOT required for local work:
+#
+#   docker compose up -d          # start Postgres
+#   pnpm db:push                  # apply the drizzle schema
+#   pnpm dev
+#
+# Optional Stripe webhook forwarding (requires STRIPE_SECRET_KEY in .env):
+#
+#   docker compose --profile stripe up -d
+#   docker compose logs stripe-cli    # copy the whsec_... into STRIPE_WEBHOOK_SECRET
+#
+name: boot-nextjs
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: boot_nextjs
+    ports:
+      # Override with POSTGRES_PORT in .env if 5432 is taken on your machine
+      # (keep DATABASE_URL in sync).
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres -d boot_nextjs]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Forwards Stripe webhooks to the dev server. Opt-in via `--profile stripe`.
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    profiles: [stripe]
+    restart: unless-stopped
+    environment:
+      # Interpolated from .env in this directory (compose loads it automatically).
+      STRIPE_API_KEY: ${STRIPE_SECRET_KEY:-}
+    command: listen --forward-to http://host.docker.internal:3000/api/auth/stripe/webhook
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  postgres-data:

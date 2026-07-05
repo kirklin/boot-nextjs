@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader, LogIn } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { GithubIcon } from "~/components/icons/github";
@@ -18,15 +19,17 @@ import { authClient } from "~/lib/auth/client";
 import { Link, useRouter } from "~/lib/i18n/navigation";
 
 export default function SignUpPage() {
+  const t = useTranslations("Auth");
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<"google" | "github" | null>(null);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignUp = async () => {
     if (!email || !password || !name) {
-      toast.warning("Please fill in all required fields.");
+      toast.warning(t("missingFields"));
       return;
     }
 
@@ -37,60 +40,58 @@ export default function SignUpPage() {
       name,
     });
     if (error) {
-      toast.error(error.message || error.statusText);
+      toast.error(error.message || t("signUpError"));
     } else {
-      toast.success("Account created successfully!");
-      router.push("/");
+      // signUp.email auto-signs-in, so land new users in the app like sign-in does.
+      toast.success(t("accountCreated"));
+      router.push("/dashboard");
     }
     setIsLoading(false);
   };
 
-  const googleSignIn = () => {
-    if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-      return toast.warning("Google client ID is not set.");
+  // Providers are configured server-side (GITHUB_CLIENT_ID / GOOGLE_CLIENT_ID);
+  // an unconfigured provider comes back as an error from the API.
+  const socialSignIn = async (provider: "google" | "github") => {
+    setSocialLoading(provider);
+    const { error } = await authClient.signIn.social({
+      provider,
+      callbackURL: "/dashboard",
+    });
+    if (error) {
+      toast.error(error.message || t("providerNotConfigured"));
     }
-    authClient.signIn
-      .social({
-        provider: "google",
-      })
-      .catch((e) => {
-        toast.error(e.error);
-      });
+    setSocialLoading(null);
   };
 
-  const githubSignIn = () => {
-    if (!process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID) {
-      return toast.warning("GitHub client ID is not set.");
-    }
-    authClient.signIn
-      .social({
-        provider: "github",
-      })
-      .catch((e) => {
-        toast.error(e.error);
-      });
-  };
+  const busy = isLoading || socialLoading !== null;
 
   return (
     <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-4 duration-700">
       <Card className="bg-background border-none mx-auto shadow-sm">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Create an account
+            {t("signUpTitle")}
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your information below to get started
+            {t("signUpDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-4">
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignUp();
+            }}
+          >
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t("fullName")}</Label>
               <Input
                 id="name"
                 type="text"
+                autoComplete="name"
                 placeholder="Kirk Lin"
-                disabled={isLoading}
+                disabled={busy}
                 value={name}
                 onChange={e => setName(e.target.value)}
                 className="h-10"
@@ -98,12 +99,13 @@ export default function SignUpPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("email")}</Label>
               <Input
                 id="email"
                 type="email"
+                autoComplete="email"
                 placeholder="kirk@kirklin.cn"
-                disabled={isLoading}
+                disabled={busy}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="h-10"
@@ -111,35 +113,32 @@ export default function SignUpPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("password")}</Label>
               <Input
                 id="password"
                 type="password"
+                autoComplete="new-password"
                 placeholder="••••••••"
-                disabled={isLoading}
+                disabled={busy}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSignUp();
-                  }
-                }}
+                minLength={8}
                 className="h-10"
                 required
               />
               <p className="text-xs text-muted-foreground">
-                Password must be at least 8 characters long
+                {t("passwordHint")}
               </p>
             </div>
             <Button
-              disabled={isLoading}
+              disabled={busy}
+              type="submit"
               className="w-full h-10 font-medium"
-              onClick={handleSignUp}
             >
               {isLoading && <Loader className="size-4 animate-spin mr-2" />}
-              Create Account
+              {t("createAccount")}
             </Button>
-          </div>
+          </form>
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
@@ -147,7 +146,7 @@ export default function SignUpPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
+                {t("orContinueWith")}
               </span>
             </div>
           </div>
@@ -155,29 +154,33 @@ export default function SignUpPage() {
           <div className="grid grid-cols-2 gap-3">
             <Button
               variant="outline"
-              onClick={googleSignIn}
+              onClick={() => socialSignIn("google")}
               className="h-10"
-              disabled={isLoading}
+              disabled={busy}
             >
-              <LogIn className="size-4 mr-2" />
+              {socialLoading === "google"
+                ? <Loader className="size-4 animate-spin mr-2" />
+                : <LogIn className="size-4 mr-2" />}
               Google
             </Button>
             <Button
               variant="outline"
-              onClick={githubSignIn}
+              onClick={() => socialSignIn("github")}
               className="h-10"
-              disabled={isLoading}
+              disabled={busy}
             >
-              <GithubIcon className="size-4 mr-2" />
+              {socialLoading === "github"
+                ? <Loader className="size-4 animate-spin mr-2" />
+                : <GithubIcon className="size-4 mr-2" />}
               GitHub
             </Button>
           </div>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Already have an account?
+            {t("hasAccount")}
             {" "}
             <Link href="/sign-in" className="text-primary hover:underline font-medium">
-              Sign In
+              {t("signIn")}
             </Link>
           </p>
         </CardContent>

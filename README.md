@@ -50,7 +50,7 @@ A modern Next.js starter template built for ai SaaS applications.
 
 - Node.js >= 18
 - pnpm >= 9
-- PostgreSQL
+- Docker (for the local PostgreSQL) — or your own PostgreSQL instance
 
 ### Setup
 
@@ -59,11 +59,27 @@ git clone https://github.com/kirklin/boot-nextjs.git
 cd boot-nextjs
 pnpm install
 cp .env.example .env
-pnpm drizzle-kit push
+pnpm db:up      # start local PostgreSQL via Docker (compose.yaml)
+pnpm db:migrate # apply database migrations
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser. Everything — auth, subscriptions, invoices — runs against the local database; no cloud services required.
+
+Useful database scripts:
+
+| Command           | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `pnpm db:up`      | Start the local PostgreSQL container           |
+| `pnpm db:down`    | Stop it                                        |
+| `pnpm db:reset`   | Wipe the database and start fresh              |
+| `pnpm db:migrate` | Apply SQL migrations                           |
+| `pnpm db:push`    | Push the drizzle schema directly (prototyping) |
+| `pnpm db:studio`  | Browse the database with Drizzle Studio        |
+
+If port 5432 is already in use, set `POSTGRES_PORT=5433` in `.env` and update `DATABASE_URL` to match.
+
+To test Stripe webhooks locally, run `pnpm stripe:listen` (Dockerized Stripe CLI; requires `STRIPE_SECRET_KEY` in `.env`) and copy the printed `whsec_...` into `STRIPE_WEBHOOK_SECRET`.
 
 ## Payments (Stripe)
 

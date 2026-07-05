@@ -16,7 +16,8 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "profile": "Profile",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "dashboard": "Dashboard"
   },
   "Profile": {
     "anonymousUser": "Anonymous User",
@@ -155,5 +156,38 @@
     "statusLabel": "Status: {status}",
     "backToHome": "Back to Home",
     "viewReceipt": "View Receipt"
+  },
+  "Auth": {
+    "signInTitle": "Welcome back",
+    "signInDescription": "Sign in to your account to continue",
+    "signUpTitle": "Create an account",
+    "signUpDescription": "Enter your information below to get started",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full Name",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "createAccount": "Create Account",
+    "orContinueWith": "Or continue with",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "passwordHint": "Password must be at least 8 characters long",
+    "missingCredentials": "Please enter both email and password.",
+    "missingFields": "Please fill in all required fields.",
+    "signInError": "Sign in failed. Please try again.",
+    "signUpError": "Sign up failed. Please try again.",
+    "accountCreated": "Account created successfully!",
+    "providerNotConfigured": "This sign-in method is not available.",
+    "logoAlt": "Logo",
+    "brandTagline": "Modern, high-performance web application template",
+    "brandHeadline": "Fast Development, Exceptional Experience",
+    "brandSubline": "Start your next project with best practices and modern tooling to build amazing user experiences."
+  },
+  "UserNav": {
+    "loading": "Loading...",
+    "unknownUser": "Unknown user",
+    "profile": "Profile",
+    "logOut": "Log out",
+    "userAvatar": "User avatar"
   }
 }

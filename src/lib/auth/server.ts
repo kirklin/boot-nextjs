@@ -95,16 +95,12 @@ function createAuth() {
     ...authOptions,
     plugins: [
       ...basePlugins,
-      customSession(async ({ session, user: authUser }: any) => {
-        if (!authUser) {
-          return session;
-        }
+      // The Stripe plugin populates user.stripeCustomerId at runtime; this
+      // surfaces it in the inferred session type for API routes.
+      customSession(async ({ session, user: authUser }) => {
         return {
-          ...session,
-          user: {
-            ...authUser,
-            stripeCustomerId: authUser.stripeCustomerId,
-          },
+          session,
+          user: authUser as typeof authUser & { stripeCustomerId?: string | null },
         };
       }, authOptions),
     ],
