@@ -126,8 +126,10 @@ export function Pricing() {
 
   const currentPlan = findPlanByName(activeSubscription?.plan);
   const currentInterval: BillingInterval = activeSubscription?.billingInterval === "year" ? "year" : "month";
-  // Promote relative to what the user already has — never promote a downgrade.
-  const highlightedPlan = getHighlightedPlan(activeSubscription?.plan);
+  // Exactly one card is featured: the next upgrade if there is one (drives
+  // conversion), otherwise the current plan once the user is on the top tier.
+  // The free plan is never featured — it shouldn't compete for attention.
+  const featuredPlan = getHighlightedPlan(activeSubscription?.plan) ?? currentPlan;
 
   const changePlan = async (plan: (typeof subscriptionPlans)[number], scheduleAtPeriodEnd: boolean) => {
     setLoadingPlan(plan.name);
@@ -200,12 +202,8 @@ export function Pricing() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* Free tier — the anchor card */}
-        <div className={cn(
-          "flex flex-col rounded-2xl border bg-card p-6",
-          user && isFreeUser && "border-primary",
-        )}
-        >
+        {/* Free tier — the anchor card, never featured so it stays recessive */}
+        <div className="flex flex-col rounded-2xl border bg-card p-6">
           <div className="flex h-7 items-center">
             <h3 className="text-xl font-semibold">{t("free.name")}</h3>
           </div>
@@ -247,7 +245,7 @@ export function Pricing() {
           const isCurrent = isCurrentPlan && interval === currentInterval;
           const isIntervalSwitch = isCurrentPlan && interval !== currentInterval;
           const isDowngrade = !!currentPlan && plan.price < currentPlan.price;
-          const isHighlighted = plan.name === highlightedPlan?.name;
+          const isFeatured = plan.name === featuredPlan?.name;
           const features = t.raw(`plans.${plan.key}.features`) as string[];
 
           return (
@@ -255,25 +253,26 @@ export function Pricing() {
               key={plan.name}
               className={cn(
                 "relative flex flex-col rounded-2xl border bg-card p-6 transition-shadow",
-                isHighlighted
+                isFeatured
                   ? "border-primary/60 shadow-[0_0_50px_-12px] shadow-primary/35"
-                  : isCurrentPlan
-                    ? "border-primary"
-                    : "hover:shadow-md",
+                  : "hover:shadow-md",
               )}
             >
               <div className="flex h-7 items-center justify-between">
                 <h3 className="text-xl font-semibold">{plan.name}</h3>
-                {isHighlighted && (
-                  <span className="rounded-full bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary">
-                    {t("recommended")}
-                  </span>
-                )}
-                {isCurrentPlan && (
-                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                    {t("currentPlan")}
-                  </span>
-                )}
+                {isCurrentPlan
+                  ? (
+                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                        {t("currentPlan")}
+                      </span>
+                    )
+                  : isFeatured
+                    ? (
+                        <span className="rounded-full bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary">
+                          {t("recommended")}
+                        </span>
+                      )
+                    : null}
               </div>
 
               <div className="mt-5">
@@ -292,7 +291,7 @@ export function Pricing() {
 
               <div className="mt-5">
                 <Button
-                  variant={isHighlighted ? "default" : "secondary"}
+                  variant={isFeatured && !isCurrentPlan ? "default" : "secondary"}
                   className="h-11 w-full rounded-full font-medium"
                   onClick={() => handleSelect(plan)}
                   disabled={loadingPlan !== null || isCurrent}
