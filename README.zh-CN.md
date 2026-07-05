@@ -91,12 +91,12 @@ pnpm dev
 语言路由策略由 [`src/lib/i18n/navigation.ts`](src/lib/i18n/navigation.ts) 中的**一行代码**控制：
 
 ```ts
-export const localePrefix: "always" | "as-needed" | "never" = "as-needed";
+export const localePrefix: "always" | "as-needed" | "never" = "never";
 ```
 
-- **`as-needed`**（默认）— 默认语言无前缀（`/pricing`），其他语言带前缀（`/zh/pricing`）。营销页 + 后台混合应用的主流选择。
+- **`never`**（默认）— 所有语言共用一个干净 URL，语言由 `NEXT_LOCALE` cookie / `Accept-Language` 决定。最适合 app 优先的产品（后台、支付）；注意搜索引擎此时只会收录公开页面的一种语言版本。老的带前缀链接依然可用：访问 `/zh/pricing` 会重定向到 `/pricing` 并自动设置语言 cookie。
+- **`as-needed`** — 默认语言无前缀（`/pricing`），其他语言带前缀（`/zh/pricing`）。当营销页需要多语言 SEO 时切到这个——hreflang 和 sitemap alternates 会自动点亮。
 - **`always`** — 所有语言都带前缀（`/en/pricing`、`/zh/pricing`）。
-- **`never`** — 所有语言共用一个 URL，语言由 cookie 决定。纯登录后应用最简单（但搜索引擎只能收录一种语言）。
 - **独立域名**（`example.com` / `example.cn`）— 取消同文件中 `domains` 配置的注释即可。
 
 下游一切自动适配：导航、中间件跳转、canonical、hreflang alternates、sitemap 全部通过 next-intl 的 `getPathname` 从这份配置推导 URL。

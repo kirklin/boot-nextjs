@@ -8,12 +8,14 @@ export const defaultLocale = "en";
  * Locale routing strategy — switch it here, everything else adapts
  * (navigation, middleware redirects, canonical/hreflang metadata, sitemap):
  *
+ * - "never" (default): one clean URL for every locale; the language comes
+ *   from the NEXT_LOCALE cookie / Accept-Language. The right choice for
+ *   app-first products (dashboard, payments) — but search engines can then
+ *   only index ONE language version of the public pages (no hreflang).
  * - "as-needed": default locale unprefixed (/pricing), others prefixed
- *   (/zh/pricing). The common choice for marketing + app hybrids.
+ *   (/zh/pricing). Switch to this when multilingual SEO for the marketing
+ *   pages matters — hreflang/sitemap alternates light up automatically.
  * - "always": every locale prefixed (/en/pricing, /zh/pricing).
- * - "never": one URL for all locales; the locale comes from the NEXT_LOCALE
- *   cookie / Accept-Language. Simplest for login-only apps, but search
- *   engines can then only index ONE language version (no hreflang).
  *
  * For domain-based locales (example.com -> en, example.cn -> zh), uncomment
  * `domains` below and pass it to defineRouting. Note: absolute URLs in
@@ -22,7 +24,7 @@ export const defaultLocale = "en";
  * origins if you enable this.
  * https://next-intl.dev/docs/routing/configuration#domains
  */
-export const localePrefix: "always" | "as-needed" | "never" = "as-needed";
+export const localePrefix: "always" | "as-needed" | "never" = "never";
 
 // export const domains = [
 //   { domain: "example.com", defaultLocale: "en" },

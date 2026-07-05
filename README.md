@@ -86,12 +86,12 @@ To test Stripe webhooks locally, run `pnpm stripe:listen` (Dockerized Stripe CLI
 Locale routing is controlled by **one line** in [`src/lib/i18n/navigation.ts`](src/lib/i18n/navigation.ts):
 
 ```ts
-export const localePrefix: "always" | "as-needed" | "never" = "as-needed";
+export const localePrefix: "always" | "as-needed" | "never" = "never";
 ```
 
-- **`as-needed`** (default) — default locale unprefixed (`/pricing`), others prefixed (`/zh/pricing`). The common choice for marketing + app hybrids.
+- **`never`** (default) — one clean URL for all locales, language from the `NEXT_LOCALE` cookie / `Accept-Language`. The right fit for app-first products (dashboard, payments); note search engines then index a single language version of the public pages. Old prefixed links keep working: `/zh/pricing` redirects to `/pricing` and sets the locale cookie.
+- **`as-needed`** — default locale unprefixed (`/pricing`), others prefixed (`/zh/pricing`). Switch to this when multilingual SEO for your marketing pages matters — hreflang + sitemap alternates light up automatically.
 - **`always`** — every locale prefixed (`/en/pricing`, `/zh/pricing`).
-- **`never`** — one URL for all locales, language from cookie. Simplest for login-only apps (search engines then index a single language only).
 - **Domain-based** (`example.com` / `example.cn`) — uncomment the `domains` config in the same file.
 
 Everything downstream adapts automatically: navigation, middleware redirects, canonicals, hreflang alternates, and the sitemap all derive URLs from this config via next-intl's `getPathname`.
