@@ -48,7 +48,14 @@ export default function DashboardPage() {
         }),
       });
       if (error) {
-        toast.error(error.message ?? t("checkoutError"));
+        // A bare 404 (no error code) means the Stripe plugin isn't registered
+        // — the deployment is missing the STRIPE_* environment variables.
+        if (error.status === 404 && !error.code) {
+          console.warn("[stripe] Subscription endpoints are not registered — set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (see README).");
+          toast.error(t("billingNotConfigured"));
+        } else {
+          toast.error(error.message ?? t("checkoutError"));
+        }
       }
     } catch (error) {
       console.error("Error during upgrade:", error);

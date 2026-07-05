@@ -113,7 +113,8 @@
           "Custom feature prioritization"
         ]
       }
-    }
+    },
+    "billingNotConfigured": "Payments are not configured on this deployment."
   },
   "Billing": {
     "title": "Billing & Invoices",

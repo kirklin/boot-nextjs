@@ -113,7 +113,8 @@
           "定制功能优先级"
         ]
       }
-    }
+    },
+    "billingNotConfigured": "该部署尚未配置支付功能。"
   },
   "Billing": {
     "title": "账单与发票",
