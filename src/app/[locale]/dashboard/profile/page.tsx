@@ -246,7 +246,7 @@ export default function ProfilePage() {
                     <Switch
                       id="2fa"
                       checked={securitySettings.twoFactorAuth}
-                      onCheckedChange={checked =>
+                      onCheckedChange={(checked: boolean) =>
                         setSecuritySettings({ ...securitySettings, twoFactorAuth: checked })}
                     />
                   </div>
@@ -263,7 +263,7 @@ export default function ProfilePage() {
                     <Switch
                       id="notifications"
                       checked={securitySettings.emailNotifications}
-                      onCheckedChange={checked =>
+                      onCheckedChange={(checked: boolean) =>
                         setSecuritySettings({ ...securitySettings, emailNotifications: checked })}
                     />
                   </div>
@@ -280,7 +280,7 @@ export default function ProfilePage() {
                     <Switch
                       id="marketing"
                       checked={securitySettings.marketingEmails}
-                      onCheckedChange={checked =>
+                      onCheckedChange={(checked: boolean) =>
                         setSecuritySettings({ ...securitySettings, marketingEmails: checked })}
                     />
                   </div>

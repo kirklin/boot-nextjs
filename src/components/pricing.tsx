@@ -188,7 +188,7 @@ export function Pricing() {
   return (
     <div className="mx-auto max-w-6xl">
       <div className="mb-10 flex justify-center">
-        <Tabs value={interval} onValueChange={value => setInterval(value as BillingInterval)}>
+        <Tabs value={interval} onValueChange={(value: string) => setInterval(value as BillingInterval)}>
           <TabsList className="h-10 rounded-full p-1">
             <TabsTrigger value="month" className="rounded-full px-5">{t("monthly")}</TabsTrigger>
             <TabsTrigger value="year" className="rounded-full px-5">
@@ -324,7 +324,7 @@ export function Pricing() {
         })}
       </div>
 
-      <AlertDialog open={downgradeTarget !== null} onOpenChange={open => !open && setDowngradeTarget(null)}>
+      <AlertDialog open={downgradeTarget !== null} onOpenChange={(open: boolean) => !open && setDowngradeTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("downgradeTitle")}</AlertDialogTitle>
