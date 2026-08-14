@@ -25,6 +25,10 @@ const nextConfig = {
   // Optimize heavy package imports for faster dev & smaller bundles
   experimental: {
     optimizePackageImports: ["lucide-react", "recharts"],
+    // `typescript` is aliased to @typescript/typescript6, which ships bin/tsc6
+    // instead of bin/tsc so it does not collide with @typescript/native.
+    // Next 16.3 defaults to the tsc CLI, so keep it on the TypeScript API.
+    useTypeScriptCli: false,
   },
 };
 
