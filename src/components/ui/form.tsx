@@ -2,6 +2,7 @@
 
 import type { Label as LabelPrimitive } from "radix-ui";
 import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
+import { cn } from "cn";
 import { Slot } from "radix-ui";
 import * as React from "react";
 import {
@@ -13,7 +14,6 @@ import {
 } from "react-hook-form";
 
 import { Label } from "~/components/ui/label";
-import { cn } from "~/lib/utils/index";
 
 const Form = FormProvider;
 

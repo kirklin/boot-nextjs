@@ -1,4 +1,5 @@
 import type { Button } from "~/components/ui/button";
+import { cn } from "cn";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -7,7 +8,6 @@ import {
 
 import * as React from "react";
 import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils/index";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
