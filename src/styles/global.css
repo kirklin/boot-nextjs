@@ -8,6 +8,48 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  /* Sweeping highlight for "thinking" text; pair with bg-clip-text. */
+  --animate-shimmer: shimmer 2.2s linear infinite;
+
+  @keyframes shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0% 0;
+    }
+  }
+
+  /* A streamed word coming into focus. */
+  --animate-word-in: word-in 0.5s ease-out both;
+
+  @keyframes word-in {
+    from {
+      opacity: 0;
+      filter: blur(6px);
+    }
+  }
+}
+
+/* Fades content up as it scrolls into view; browsers without scroll-driven animations show it as is. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+}
+
 .pr {
   @apply relative;
 }

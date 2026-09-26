@@ -18,7 +18,7 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { app, FEATURES, PRESETS, TRIM_DOC_SECTIONS } from "./manifests.mjs";
+import { app, FEATURES, PRESETS, SHARED_FILES, TRIM_DOC_SECTIONS, trimTool } from "./manifests.mjs";
 import { bold, confirm, cyan, dim, fail, green, heading, multiselect, note, step, yellow } from "./ui.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -119,7 +119,11 @@ async function resolveFeatures() {
 // Plan phase — compute and validate the full change set in memory
 // ---------------------------------------------------------------------------
 
-function computePlan(features) {
+/**
+ * `features` are the ones the user chose to remove; `footprints` go with them
+ * without being listed as removed (the trim tool's own homepage tile).
+ */
+function computePlan(features, footprints) {
   // Virtual file state: string = pending content, null = pending deletion.
   const vfs = new Map();
   const readVirtual = (rel) => {
@@ -147,7 +151,8 @@ function computePlan(features) {
     removingApp: features.some(f => f.name === app.name),
   };
 
-  for (const feature of features) {
+  const removed = [...features, ...footprints];
+  for (const feature of removed) {
     for (const target of feature.deletions) {
       if (fs.existsSync(path.join(ROOT, target))) {
         plan.deletions.push(target);
@@ -225,6 +230,13 @@ function computePlan(features) {
     vfs.set("package.json", `${JSON.stringify(pkg, null, 2)}\n`);
 
     plan.regenerateMigrations ||= feature.regenerateMigrations;
+  }
+
+  for (const { file, usedBy } of SHARED_FILES) {
+    if (usedBy.every(name => removed.some(f => f.name === name)) && fs.existsSync(path.join(ROOT, file))) {
+      plan.deletions.push(file);
+      vfs.set(file, null);
+    }
   }
 
   plan.regenerateMigrations &&= !plan.removingApp;
@@ -368,7 +380,7 @@ if (features.length === 0) {
   process.exit(0);
 }
 
-const plan = computePlan(features);
+const plan = computePlan(features, keepTool ? [] : [trimTool]);
 
 if (plan.problems.length > 0) {
   fail("The template source has drifted from the trim manifest. Nothing was changed.");

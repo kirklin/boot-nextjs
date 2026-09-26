@@ -14,12 +14,29 @@ export const ai = {
   requires: [],
   deletions: [
     "src/components/ai-elements",
+    "src/components/landing/tiles/ai-tile.tsx",
+    "src/components/landing/tiles/ai-chat.tsx",
   ],
   replacements: [],
   patches: [
     {
-      file: "src/app/[locale]/page.tsx",
-      find: / {2}\{\n {4}icon: <MessageSquare className="h-6 w-6" \/>,\n {4}title: "AI Integration",[\s\S]*?\n {2}\},\n/,
+      file: "src/components/landing/features.tsx",
+      find: / {12}<AiTile \/>\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/features.tsx",
+      find: /import \{ AiTile \} from "~\/components\/landing\/tiles\/ai-tile";\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/tiles/stack-tile.tsx",
+      find: / {2}\{ name: "AI SDK", [^\n]*\},\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/layout/site-menu.tsx",
+      find: / {2}\{ key: "ai", [^\n]*\},\n/,
       replace: "",
     },
     // Best-effort README cleanup.
@@ -68,7 +85,7 @@ export const ai = {
   removeDevDependencies: [],
   removeScripts: [],
   removeLocaleNamespaces: [],
-  removeLocaleKeys: [],
+  removeLocaleKeys: [["HomeFeatures", "ai"], ["SiteMenu", "ai"]],
   regenerateMigrations: false,
 };
 
@@ -85,6 +102,8 @@ export const payments = {
     "src/app/[locale]/payment-result",
     "src/app/[locale]/pricing",
     "src/components/pricing.tsx",
+    "src/components/landing/tiles/payments-tile.tsx",
+    "src/components/landing/tiles/billing-preview.tsx",
     "scripts/stripe-seed.mjs",
   ],
   replacements: [
@@ -188,8 +207,28 @@ export const payments = {
       replace: "",
     },
     {
-      file: "src/app/[locale]/page.tsx",
-      find: / {2}\{\n {4}icon: <CreditCard className="h-6 w-6" \/>,\n {4}title: "Payment Integration",[\s\S]*?\n {2}\},\n/,
+      file: "src/components/landing/features.tsx",
+      find: / {12}<PaymentsTile \/>\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/features.tsx",
+      find: /import \{ PaymentsTile \} from "~\/components\/landing\/tiles\/payments-tile";\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/tiles/stack-tile.tsx",
+      find: / {2}\{ name: "Stripe", [^\n]*\},\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/layout/site-menu.tsx",
+      find: / {2}\{ key: "billing", [^\n]*\},\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/layout/site-menu.tsx",
+      find: / {2}\{ key: "pricing", [^\n]*\},\n/,
       replace: "",
     },
     {
@@ -271,7 +310,12 @@ export const payments = {
   removeDevDependencies: [],
   removeScripts: ["stripe:listen", "stripe:seed"],
   removeLocaleNamespaces: ["Pricing", "Billing", "PaymentResult"],
-  removeLocaleKeys: [["Header", "pricing"]],
+  removeLocaleKeys: [
+    ["Header", "pricing"],
+    ["HomeFeatures", "payments"],
+    ["SiteMenu", "billing"],
+    ["SiteMenu", "pricing"],
+  ],
   regenerateMigrations: true,
 };
 
@@ -288,6 +332,8 @@ export const app = {
     "src/app/[locale]/(auth)",
     "src/app/[locale]/dashboard",
     "src/components/dashboard",
+    "src/components/landing/tiles/auth-tile.tsx",
+    "src/components/landing/tiles/dashboard-tile.tsx",
     "drizzle.config.ts",
     "compose.yaml",
   ],
@@ -301,9 +347,40 @@ export const app = {
       find: / {2}BETTER_AUTH_SECRET: z\.string\(\)\.optional\(\),\n\n {2}GITHUB_CLIENT_ID: z\.string\(\)\.optional\(\),\n {2}GITHUB_CLIENT_SECRET: z\.string\(\)\.optional\(\),\n\n {2}GOOGLE_CLIENT_ID: z\.string\(\)\.optional\(\),\n {2}GOOGLE_CLIENT_SECRET: z\.string\(\)\.optional\(\),\n/,
       replace: "  // Add your server-side environment variables here.\n",
     },
+    // The homepage row of the auth, billing and dashboard tiles (billing is gone already: it requires this feature).
     {
-      file: "src/app/[locale]/page.tsx",
-      find: / {2}\{\n {4}icon: <LayoutDashboard className="h-6 w-6" \/>,\n {4}title: "Dashboard Ready",[\s\S]*?\n {2}\},\n/,
+      file: "src/components/landing/features.tsx",
+      find: / {10}<BentoRow even>\n {12}<AuthTile \/>\n(?: {12}<PaymentsTile \/>\n)? {12}<DashboardTile \/>\n {10}<\/BentoRow>\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/features.tsx",
+      find: /import \{ AuthTile \} from "~\/components\/landing\/tiles\/auth-tile";\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/features.tsx",
+      find: /import \{ DashboardTile \} from "~\/components\/landing\/tiles\/dashboard-tile";\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/layout/site-menu.tsx",
+      find: / {2}\{ key: "auth", [^\n]*\},\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/layout/site-menu.tsx",
+      find: / {2}\{ key: "dashboard", [^\n]*\},\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/tiles/stack-tile.tsx",
+      find: / {2}\{ name: "Better Auth", [^\n]*\},\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/tiles/stack-tile.tsx",
+      find: / {2}\{ name: "Drizzle", [^\n]*\},\n/,
       replace: "",
     },
     {
@@ -405,12 +482,61 @@ export const app = {
     ["Header", "profile"],
     ["Header", "signOut"],
     ["Header", "dashboard"],
+    ["HomeFeatures", "auth"],
+    ["HomeFeatures", "dashboard"],
+    ["SiteMenu", "auth"],
+    ["SiteMenu", "dashboard"],
   ],
+  regenerateMigrations: false,
+};
+
+/**
+ * The trim tool's own tile on the homepage. It is removed along with the tool
+ * (i.e. unless --keep-tool), after the selected features.
+ */
+export const trimTool = {
+  name: "trim",
+  title: "Trim tool",
+  hint: "homepage tile showing pnpm trim",
+  requires: [],
+  deletions: [
+    "src/components/landing/tiles/trim-tile.tsx",
+    "src/components/landing/tiles/trim-terminal.tsx",
+  ],
+  replacements: [],
+  patches: [
+    // The whole row when the AI tile is gone already, otherwise just this tile.
+    {
+      file: "src/components/landing/features.tsx",
+      find: / {10}<BentoRow>\n {12}<TrimTile \/>\n {10}<\/BentoRow>\n| {12}<TrimTile \/>\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/landing/features.tsx",
+      find: /import \{ TrimTile \} from "~\/components\/landing\/tiles\/trim-tile";\n/,
+      replace: "",
+    },
+    {
+      file: "src/components/layout/site-menu.tsx",
+      find: / {2}\{ key: "trim", [^\n]*\},\n/,
+      replace: "",
+    },
+  ],
+  removeDependencies: [],
+  removeDevDependencies: [],
+  removeScripts: [],
+  removeLocaleNamespaces: [],
+  removeLocaleKeys: [["HomeFeatures", "trim"], ["SiteMenu", "trim"]],
   regenerateMigrations: false,
 };
 
 /** All features, in the order they must be applied. */
 export const FEATURES = [ai, payments, app];
+
+/** Files several features (or the trim tool's tile) use: deleted once all of them are removed. */
+export const SHARED_FILES = [
+  { file: "src/components/landing/use-timeline.ts", usedBy: [ai.name, trimTool.name] },
+];
 
 /** Named presets for non-interactive use. */
 export const PRESETS = {

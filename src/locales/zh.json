@@ -1,9 +1,84 @@
 {
   "HomePage": {
-    "title": "Boot Next.js",
-    "description": "现代化的Next.js启动模板，支持国际化、Tailwind CSS和TypeScript。",
-    "getStarted": "开始使用",
-    "createAccount": "创建账号"
+    "actions": {
+      "getStarted": "开始使用",
+      "github": "在 GitHub 上查看"
+    },
+    "copy": {
+      "label": "复制命令",
+      "copied": "已复制到剪贴板"
+    },
+    "features": {
+      "title": "上线所需，一应俱全。",
+      "description": "为 AI SaaS 准备的 Next.js 16 模板。登录认证、订阅收费、AI 组件、多语言和控制台，都已经接好。"
+    },
+    "cta": {
+      "title": "现在就开始构建。",
+      "description": "克隆仓库，几分钟内就能在本地运行一个可以上线的 SaaS。"
+    }
+  },
+  "HomeFeatures": {
+    "ai": {
+      "eyebrow": "AI 组件",
+      "title": "流式 AI 对话，拿来就能用。",
+      "description": "40 多个组件，覆盖对话、推理和工具调用，基于 Vercel AI SDK。",
+      "prompt": "上周哪个套餐带来的注册最多？",
+      "assistant": "助手",
+      "thinking": "思考中…",
+      "answer": "Professional 套餐贡献了 58% 的新注册，比前一周增长 24%，增长主要来自年付用户。",
+      "range": "最近 7 天",
+      "reasoning": "推理",
+      "tools": "工具",
+      "sources": "来源"
+    },
+    "trim": {
+      "title": "只留下你需要的。",
+      "description": "一条命令就能移除一个功能，连同它的代码、依赖、环境变量、翻译和文档。"
+    },
+    "auth": {
+      "eyebrow": "登录认证",
+      "title": "登录，开箱即用。",
+      "description": "邮箱密码、GitHub 和 Google 登录，会话和 JWT 由 Better Auth 提供。"
+    },
+    "payments": {
+      "eyebrow": "Stripe 收费",
+      "title": "第一天就能收款。",
+      "description": "订阅、年付、免费试用和一次性购买，通过 Webhook 保持同步。",
+      "trial": "开始 {days} 天免费试用",
+      "subscribe": "立即订阅"
+    },
+    "dashboard": {
+      "eyebrow": "控制台",
+      "title": "每位用户，都有自己的控制台。",
+      "description": "个人资料和用量页面，数据存放在 PostgreSQL，由 Drizzle ORM 访问，一条命令启动数据库。",
+      "tokens": "本月 AI 用量"
+    },
+    "theming": {
+      "eyebrow": "深色模式",
+      "title": "白天浅色，夜晚深色。",
+      "description": "基于 Tailwind CSS 4 的 shadcn/ui 跟随系统主题，加载时不闪烁。可以在这里直接试试。",
+      "appearance": "外观",
+      "light": "浅色",
+      "dark": "深色",
+      "auto": "自动"
+    },
+    "i18n": {
+      "eyebrow": "多语言与 SEO",
+      "title": "多种语言，一套代码。",
+      "description": "改一行配置就能切换网址策略，canonical、hreflang 和站点地图自动跟上。",
+      "language": "语言",
+      "notes": {
+        "never": "网址不变，语言取自 NEXT_LOCALE Cookie",
+        "as-needed": "默认语言不加前缀，其他语言加前缀",
+        "always": "所有语言都加前缀"
+      },
+      "current": "当前配置"
+    },
+    "stack": {
+      "eyebrow": "技术基础",
+      "title": "建立在现代 Web 之上。",
+      "description": "Next.js 16、React 19、TypeScript 和 Tailwind CSS 4，常用的库也都已配置好。"
+    }
   },
   "LocaleSwitcher": {
     "label": "切换语言",
@@ -18,6 +93,29 @@
     "profile": "个人中心",
     "signOut": "退出登录",
     "dashboard": "控制台"
+  },
+  "SiteMenu": {
+    "trigger": "功能",
+    "open": "打开菜单",
+    "close": "关闭菜单",
+    "explore": "探索 Boot Next.js",
+    "ai": "AI 组件",
+    "auth": "登录认证",
+    "billing": "Stripe 收费",
+    "dashboard": "控制台",
+    "i18n": "多语言与 SEO",
+    "theming": "深色模式",
+    "allFeatures": "查看全部功能",
+    "getStarted": "快速开始",
+    "docs": "阅读文档",
+    "clone": "克隆仓库",
+    "trim": "精简模板",
+    "deploy": "部署到 Vercel",
+    "resources": "资源",
+    "pricing": "价格",
+    "showcase": "案例",
+    "about": "关于我们",
+    "privacy": "隐私政策"
   },
   "Profile": {
     "anonymousUser": "匿名用户",

@@ -1,9 +1,84 @@
 {
   "HomePage": {
-    "title": "Boot Next.js",
-    "description": "Modern Next.js starter template with i18n support, Tailwind CSS, and TypeScript.",
-    "getStarted": "Get Started",
-    "createAccount": "Create Account"
+    "actions": {
+      "getStarted": "Get started",
+      "github": "View on GitHub"
+    },
+    "copy": {
+      "label": "Copy command",
+      "copied": "Copied to clipboard"
+    },
+    "features": {
+      "title": "Everything you need to launch.",
+      "description": "The Next.js 16 starter for AI SaaS. Authentication, billing, AI components, i18n and a dashboard, already wired together."
+    },
+    "cta": {
+      "title": "Start building today.",
+      "description": "Clone the repository and run a production-ready SaaS locally in minutes."
+    }
+  },
+  "HomeFeatures": {
+    "ai": {
+      "eyebrow": "AI components",
+      "title": "Streaming AI chat, ready to go.",
+      "description": "40+ components for chat, reasoning and tool calls, built on the Vercel AI SDK.",
+      "prompt": "Which plan drove signups last week?",
+      "assistant": "Assistant",
+      "thinking": "Thinking…",
+      "answer": "Professional brought in 58% of new signups, up 24% on the week before. Most of the growth came from annual billing.",
+      "range": "last 7 days",
+      "reasoning": "Reasoning",
+      "tools": "Tools",
+      "sources": "Sources"
+    },
+    "trim": {
+      "title": "Keep only what you need.",
+      "description": "One command removes a feature with its code, dependencies, env vars, translations and docs."
+    },
+    "auth": {
+      "eyebrow": "Authentication",
+      "title": "Sign-in, handled.",
+      "description": "Email and password, GitHub and Google, with sessions and JWT from Better Auth."
+    },
+    "payments": {
+      "eyebrow": "Stripe billing",
+      "title": "Get paid from day one.",
+      "description": "Subscriptions, annual plans, free trials and one-time purchases, synced by webhooks.",
+      "trial": "Start {days}-day free trial",
+      "subscribe": "Subscribe"
+    },
+    "dashboard": {
+      "eyebrow": "Dashboard",
+      "title": "Every user gets a dashboard.",
+      "description": "Profile and usage pages on PostgreSQL and Drizzle ORM. One command starts the database.",
+      "tokens": "AI tokens this month"
+    },
+    "theming": {
+      "eyebrow": "Dark mode",
+      "title": "Light by day. Dark by night.",
+      "description": "shadcn/ui on Tailwind CSS 4 follows the system theme, with no flash on load. Try it here.",
+      "appearance": "Appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "i18n": {
+      "eyebrow": "i18n & SEO",
+      "title": "Every language, one codebase.",
+      "description": "Switch the URL strategy with one line. Canonical URLs, hreflang tags and the sitemap follow.",
+      "language": "Language",
+      "notes": {
+        "never": "One URL, language from the NEXT_LOCALE cookie",
+        "as-needed": "Default language unprefixed, others prefixed",
+        "always": "Every language prefixed"
+      },
+      "current": "Current setting"
+    },
+    "stack": {
+      "eyebrow": "Foundation",
+      "title": "Built on the modern web.",
+      "description": "Next.js 16, React 19, TypeScript and Tailwind CSS 4, with the libraries you would pick already set up."
+    }
   },
   "LocaleSwitcher": {
     "label": "Change language",
@@ -18,6 +93,29 @@
     "profile": "Profile",
     "signOut": "Sign Out",
     "dashboard": "Dashboard"
+  },
+  "SiteMenu": {
+    "trigger": "Features",
+    "open": "Open menu",
+    "close": "Close menu",
+    "explore": "Explore Boot Next.js",
+    "ai": "AI components",
+    "auth": "Authentication",
+    "billing": "Stripe billing",
+    "dashboard": "Dashboard",
+    "i18n": "i18n & SEO",
+    "theming": "Dark mode",
+    "allFeatures": "See all features",
+    "getStarted": "Get started",
+    "docs": "Read the docs",
+    "clone": "Clone the repository",
+    "trim": "Trim the template",
+    "deploy": "Deploy to Vercel",
+    "resources": "Resources",
+    "pricing": "Pricing",
+    "showcase": "Showcase",
+    "about": "About us",
+    "privacy": "Privacy policy"
   },
   "Profile": {
     "anonymousUser": "Anonymous User",
